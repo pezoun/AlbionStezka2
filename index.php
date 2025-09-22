@@ -132,7 +132,7 @@
       </div>
 
       <div class="input-group">
-        <label for="loginPassword">Heslo</label>
+        <label for="loginPassword">Hesle</label>
         <div class="input-with-icon">
           <i class="fas fa-lock"></i>
           <input type="password" name="password" id="loginPassword" placeholder="••••••••" required>
