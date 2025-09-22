@@ -85,7 +85,7 @@
     </div>
 
     <div class="input-group">
-      <label for="city">Město</label>
+      <label for="city">Městoo</label>
       <div class="input-with-icon">
         <i class="fas fa-city" aria-hidden="true"></i>
         <input type="text" name="city" id="city" placeholder="Praha" required>
