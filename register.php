@@ -1,114 +1,64 @@
 <?php
-include 'connect.php';
+session_start();
+require_once __DIR__ . '/connect.php';
 
-// === REGISTRACE ===
-if (isset($_POST['signUp'])) {
-
-    // Načti a ořež vstupy
-    $firstName = trim($_POST['fName'] ?? '');
-    $lastName  = trim($_POST['lName'] ?? '');
+$errors = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $firstName = trim($_POST['firstName'] ?? '');
+    $lastName  = trim($_POST['lastName'] ?? '');
+    $nickname  = trim($_POST['nickname'] ?? '');
     $email     = trim($_POST['email'] ?? '');
     $password  = $_POST['password'] ?? '';
-    $gender    = $_POST['gender'] ?? '';
-    $ageRaw    = $_POST['age'] ?? '';
-    $city      = trim($_POST['city'] ?? '');
 
-    $errors = [];
-
-    // Validace jména
-    if ($firstName === '') $errors[] = 'Jméno';
-    if ($lastName === '')  $errors[] = 'Příjmení';
-
-    // Email
-    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'E-mail';
+    if ($firstName === '' || $lastName === '' || $nickname === '' || $email === '' || $password === '') {
+        $errors[] = 'Vyplň prosím všechna pole.';
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Zadej platný email.';
+    }
+    if (strlen($nickname) < 3 || strlen($nickname) > 50) {
+        $errors[] = 'Přezdívka musí mít 3–50 znaků.';
+    }
+    if (strlen($password) < 8) {
+        $errors[] = 'Heslo musí mít alespoň 8 znaků.';
     }
 
-    // Heslo
-    if ($password === '') $errors[] = 'Heslo';
-
-    // Gender (jen povolené hodnoty)
-    $allowedGender = ['male','female','other'];
-    if ($gender === '' || !in_array($gender, $allowedGender, true)) {
-        $errors[] = 'Pohlaví';
+    // Kontrola unikátnosti emailu a přezdívky
+    if (!$errors) {
+        $sql = "SELECT 1 FROM users WHERE email = ? OR nickname = ? LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ss', $email, $nickname);
+        $stmt->execute();
+        $exists = $stmt->get_result()->fetch_row();
+        if ($exists) {
+            $errors[] = 'Email nebo přezdívka už existují.';
+        }
     }
 
-    // Věk (číslo 1–120)
-    if ($ageRaw === '' || !ctype_digit((string)$ageRaw)) {
-        $errors[] = 'Věk';
-    }
-    $age = (int)$ageRaw;
-    if ($age < 1 || $age > 120) {
-        if (!in_array('Věk', $errors, true)) $errors[] = 'Věk';
-    }
+    if (!$errors) {
+        $hash = password_hash($password, PASSWORD_DEFAULT);
 
-    // Město
-    if ($city === '') $errors[] = 'Město';
-
-    if (!empty($errors)) {
-        $msg = 'Chybí: ' . urlencode(implode(', ', $errors));
-        header("Location: index.php?error=$msg&form=register");
-        exit();
-    }
-
-    // Hash hesla (ponecháno MD5 kvůli kompatibilitě s DB; doporučuji přejít na password_hash)
-    $passwordHash = md5($password);
-
-    // Duplicita e-mailu
-    $stmt = $conn->prepare("SELECT 1 FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows > 0) {
-        $stmt->close();
-        header("Location: index.php?error=" . urlencode("E-mail už existuje") . "&form=register");
-        exit();
-    }
-    $stmt->close();
-
-    // INSERT
-    $sql = "INSERT INTO users (firstName, lastName, email, password, gender, age, city)
-            VALUES (?,?,?,?,?,?,?)";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        header("Location: index.php?error=" . urlencode("Chyba při přípravě dotazu") . "&form=register");
-        exit();
-    }
-    $stmt->bind_param("sssssis", $firstName, $lastName, $email, $passwordHash, $gender, $age, $city);
-    if ($stmt->execute()) {
-        $stmt->close();
-        header("Location: index.php?success=" . urlencode("Registrace proběhla úspěšně!") . "&form=register");
-        exit();
-    } else {
-        $stmt->close();
-        header("Location: index.php?error=" . urlencode("Chyba při ukládání uživatele") . "&form=register");
-        exit();
+        $sql = "INSERT INTO users (firstName, lastName, nickname, email, password)
+                VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('sssss', $firstName, $lastName, $nickname, $email, $hash);
+        if ($stmt->execute()) {
+            // auto login po registraci
+            $_SESSION['user_id']   = $stmt->insert_id;
+            $_SESSION['firstName'] = $firstName;
+            $_SESSION['lastName']  = $lastName;
+            $_SESSION['nickname']  = $nickname;
+            $_SESSION['email']     = $email;
+            header('Location: homepage.php');
+            exit;
+        } else {
+            $errors[] = 'Registrace se nezdařila. Zkus to prosím znovu.';
+        }
     }
 }
 
-// === PŘIHLÁŠENÍ ===
-if (isset($_POST['signIn'])) {
-    $email    = trim($_POST['email'] ?? '');
-    $password = md5($_POST['password'] ?? '');
-
-    $stmt = $conn->prepare("SELECT email FROM users WHERE email = ? AND password = ?");
-    $stmt->bind_param("ss", $email, $password);
-    $stmt->execute();
-    $res = $stmt->get_result();
-
-    if ($res && $res->num_rows > 0) {
-        session_start();
-        $_SESSION['email'] = $email;
-        $stmt->close();
-        header("Location: homepage.php");
-        exit();
-    } else {
-        $stmt->close();
-        header("Location: index.php?error=" . urlencode("Nesprávný e-mail nebo heslo") . "&form=login");
-        exit();
-    }
-}
-
-// Fallback
-header("Location: index.php");
-exit();
+// Když jsou chyby, vrať se na index s parametrem a zprávou
+$query = http_build_query(['form' => 'register']);
+$_SESSION['register_errors'] = $errors;
+header('Location: index.php?' . $query);
+exit;

@@ -1,47 +1,30 @@
 <?php
 session_start();
-include "connect.php";
-
-if (!isset($_SESSION['email'])) {
-    header("Location: index.php");
-    exit();
+if (empty($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit;
 }
-
-$email = $_SESSION['email'];
-$stmt  = $conn->prepare("SELECT firstName, lastName, email, gender, age, city FROM users WHERE email = ?");
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
-$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homepage</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    body{font-family:"DM Sans",sans-serif;background:#0f0f0f;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0}
-    .card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:14px;padding:28px;max-width:560px;width:90%;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    h1{margin:0 0 10px;font-weight:600}
-    .muted{color:#bbb;margin:0 0 20px}
-    .grid{display:grid;grid-template-columns:120px 1fr;gap:10px 16px}
-    .label{color:#aaa}
-    a.logout{display:inline-block;margin-top:22px;padding:10px 14px;border-radius:10px;background:#c00;color:#fff;text-decoration:none}
-    a.logout:hover{filter:brightness(1.05)}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Domů | Sportovní aplikace</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="card">
-    <h1>Ahoj, <?php echo htmlspecialchars($user['firstName'].' '.$user['lastName']); ?> 👋</h1>
-    <p class="muted">Jsi přihlášen jako <?php echo htmlspecialchars($user['email']); ?>.</p>
-    <div class="grid">
-      <div class="label">Pohlaví</div><div><?php echo htmlspecialchars($user['gender'] ?? '—'); ?></div>
-      <div class="label">Věk</div><div><?php echo htmlspecialchars((string)($user['age'] ?? '—')); ?></div>
-      <div class="label">Město</div><div><?php echo htmlspecialchars($user['city'] ?? '—'); ?></div>
+  <div class="container">
+    <h1 class="form-title">Vítej, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
+    <p><strong>Přezdívka:</strong> <?= htmlspecialchars($_SESSION['nickname']) ?></p>
+    <p><strong>Email:</strong> <?= htmlspecialchars($_SESSION['email']) ?></p>
+
+    <div style="margin-top: 20px;">
+      <a class="btn" href="logout.php">Odhlásit</a>
     </div>
-    <a class="logout" href="logout.php">Odhlásit</a>
   </div>
 </body>
 </html>

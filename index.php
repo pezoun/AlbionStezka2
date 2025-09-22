@@ -1,156 +1,157 @@
+<?php
+session_start();
+require_once __DIR__ . '/connect.php';
+
+// pokud je uživatel přihlášen, pošli ho na homepage
+if (!empty($_SESSION['user_id'])) {
+    header('Location: homepage.php');
+    exit;
+}
+
+$loginError = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'login') {
+    $identifier = trim($_POST['identifier'] ?? '');
+    $password   = $_POST['password'] ?? '';
+
+    if ($identifier === '' || $password === '') {
+        $loginError = 'Vyplň přihlašovací údaje.';
+    } else {
+        // dovolíme přihlášení emailem NEBO přezdívkou
+        $sql = "SELECT Id, firstName, lastName, nickname, email, password 
+                FROM users 
+                WHERE email = ? OR nickname = ?
+                LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ss', $identifier, $identifier);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = (int)$user['Id'];
+            $_SESSION['firstName'] = $user['firstName'];
+            $_SESSION['lastName']  = $user['lastName'];
+            $_SESSION['nickname']  = $user['nickname'];
+            $_SESSION['email']     = $user['email'];
+            header('Location: homepage.php');
+            exit;
+        } else {
+            $loginError = 'Neplatný email/přezdívka nebo heslo.';
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Registrace & Přihlášení</title>
+  <title>Přihlášení | Sportovní aplikace</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  <link rel="stylesheet" href="style.css"/>
-</head>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 <body>
-  <!-- REGISTRACE -->
-  <div class="container" id="signup" style="display:none;">
-    <?php if (isset($_GET['error']) && isset($_GET['form']) && $_GET['form'] === 'register'): ?>
-      <div class="alert error" id="autoAlert">
-        <i class="fas fa-exclamation-circle"></i>
-        <?php echo htmlspecialchars($_GET['error']); ?>
-      </div>
-    <?php endif; ?>
-    <?php if (isset($_GET['success']) && isset($_GET['form']) && $_GET['form'] === 'register'): ?>
-      <div class="alert success" id="autoAlert">
-        <i class="fas fa-check-circle"></i>
-        <?php echo htmlspecialchars($_GET['success']); ?>
-      </div>
+  <div class="container">
+    <?php if ($loginError): ?>
+      <div class="alert error" id="autoAlert"><i class="fas fa-circle-exclamation"></i><?= htmlspecialchars($loginError) ?></div>
     <?php endif; ?>
 
-    <h1 class="form-title">Vytvořit účet</h1>
-    <form method="post" action="register.php" class="form-grid">
-  <!-- Řádek: Jméno + Příjmení -->
-  <div class="input-row">
-    <div class="input-group">
-      <label for="fName">Jméno</label>
-      <div class="input-with-icon">
-        <i class="fas fa-user" aria-hidden="true"></i>
-        <input type="text" name="fName" id="fName" placeholder="Jan" required>
-      </div>
-    </div>
-    <div class="input-group">
-      <label for="lName">Příjmení</label>
-      <div class="input-with-icon">
-        <i class="fas fa-user" aria-hidden="true"></i>
-        <input type="text" name="lName" id="lName" placeholder="Novák" required>
-      </div>
-    </div>
-  </div>
-
-  <div class="input-group">
-    <label for="email">E-mail</label>
-    <div class="input-with-icon">
-      <i class="fas fa-envelope" aria-hidden="true"></i>
-      <input type="email" name="email" id="email" placeholder="jan.novak@email.cz" required>
-    </div>
-  </div>
-
-  <div class="input-group">
-    <label for="registerPassword">Heslo</label>
-    <div class="input-with-icon">
-      <i class="fas fa-lock" aria-hidden="true"></i>
-      <input type="password" name="password" id="registerPassword" placeholder="••••••••" required>
-      <button class="toggle-password" type="button" data-target="registerPassword" aria-label="Zobrazit heslo">
-        <i class="fas fa-eye"></i>
-      </button>
-    </div>
-    <div class="password-strength" id="registerStrength"></div>
-  </div>
-
-  <div class="input-group">
-    <label>Pohlaví</label>
-    <div class="radio-row">
-      <label><input type="radio" name="gender" value="male" required> Muž</label>
-      <label><input type="radio" name="gender" value="female"> Žena</label>
-      <label><input type="radio" name="gender" value="other"> Jiné</label>
-    </div>
-  </div>
-
-  <div class="input-row">
-    <div class="input-group">
-      <label for="age">Věk</label>
-      <div class="input-with-icon">
-        <i class="fas fa-hashtag" aria-hidden="true"></i>
-        <input type="number" name="age" id="age" min="1" max="120" placeholder="18" required>
-      </div>
-    </div>
-
-    <div class="input-group">
-      <label for="city">Město</label>
-      <div class="input-with-icon">
-        <i class="fas fa-city" aria-hidden="true"></i>
-        <input type="text" name="city" id="city" placeholder="Praha" required>
-      </div>
-    </div>
-  </div>
-
-  <div class="actions full">
-    <input type="submit" class="btn" value="Zaregistrovat se" name="signUp">
-  </div>
-</form>
-
-    </form>
-
-    <div class="links">
-      <p>Už máš účet?</p>
-      <button id="signInButton" class="link-button">Přihlásit</button>
-    </div>
-  </div>
-
-  <!-- PŘIHLÁŠENÍ -->
-  <div class="container" id="signIn">
-    <?php if (isset($_GET['error']) && (!isset($_GET['form']) || $_GET['form'] === 'login')): ?>
-      <div class="alert error" id="autoAlert">
-        <i class="fas fa-exclamation-circle"></i>
-        <?php echo htmlspecialchars($_GET['error']); ?>
-      </div>
-    <?php endif; ?>
-    <?php if (isset($_GET['success']) && (!isset($_GET['form']) || $_GET['form'] === 'login')): ?>
-      <div class="alert success" id="autoAlert">
-        <i class="fas fa-check-circle"></i>
-        <?php echo htmlspecialchars($_GET['success']); ?>
-      </div>
-    <?php endif; ?>
-
-    <h1 class="form-title">Přihlášení</h1>
-    <form method="post" action="register.php">
+    <form id="signIn" method="post" class="form-grid" autocomplete="on">
+      <h1 class="form-title">Přihlášení</h1>
+      <input type="hidden" name="action" value="login">
       <div class="input-group">
-        <label for="loginEmail">E-mail</label>
+        <label for="identifier">Email nebo přezdívka</label>
         <div class="input-with-icon">
-          <i class="fas fa-envelope"></i>
-          <input type="email" name="email" id="loginEmail" placeholder="email@example.com" required>
+          <i class="fas fa-user"></i>
+          <input type="text" id="identifier" name="identifier" placeholder="email@email.cz" required>
         </div>
       </div>
 
       <div class="input-group">
-        <label for="loginPassword">Hesle</label>
+        <label for="loginPassword">Heslo</label>
         <div class="input-with-icon">
           <i class="fas fa-lock"></i>
-          <input type="password" name="password" id="loginPassword" placeholder="••••••••" required>
-          <button class="toggle-password" type="button" data-target="loginPassword" aria-label="Zobrazit heslo">
-            <i class="fas fa-eye"></i>
-          </button>
+          <input type="password" id="loginPassword" name="password" placeholder="********" required>
+          <button class="toggle-password" data-target="loginPassword"><i class="fa-solid fa-eye"></i></button>
         </div>
       </div>
 
-      <div class="actions">
-        <input type="submit" class="btn" value="Přihlásit" name="signIn">
+      <button class="btn" type="submit" id="signInButton">Přihlásit se</button>
+
+      <div class="links">
+        <p>Nemáš účet?</p>
+        <button type="button" id="signUpButton">Vytvořit účet</button>
       </div>
     </form>
 
-    <div class="links">
-      <p>Ještě nemáš účet?</p>
-      <button id="signUpButton" class="link-button">Registrovat</button>
-    </div>
+    <!-- Registrace (skrytá, přepíná se JS) -->
+    <form id="signup" method="post" action="register.php" class="form-grid" style="display:none" autocomplete="off">
+      <h2 class="form-title">Registrace</h2>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="firstName">Jméno</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="firstName" name="firstName" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="lastName">Příjmení</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="lastName" name="lastName" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="nickname">Přezdívka</label>
+        <div class="input-with-icon">
+          <i class="fas fa-hashtag"></i>
+          <input type="text" id="nickname" name="nickname" minlength="3" maxlength="50" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <div class="input-with-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" name="email" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="registerPassword">Heslo</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="registerPassword" name="password" minlength="8" required>
+          <button class="toggle-password" data-target="registerPassword"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <div style="width:100%;height:6px;background:#eee;border-radius:4px;overflow:hidden;margin-top:6px;">
+          <div id="strengthBar" style="height:100%;width:0%;background:#c00;transition:width 0.3s,background 0.3s;"></div>
+        </div>
+        <small id="registerStrength" class="password-strength"></small>
+      </div>
+
+      <div class="input-group">
+        <label for="repeatPassword">Zopakuj heslo</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="repeatPassword" name="repeatPassword" minlength="8" required>
+          <button class="toggle-password" data-target="repeatPassword"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </div>
+
+      <button class="btn" type="submit">Zaregistrovat</button>
+
+      <div class="links">
+        <p>Už máš účet?</p>
+        <button type="button" id="signInButtonReg">Přihlásit se</button>
+      </div>
+    </form>
   </div>
 
   <script src="script.js"></script>
