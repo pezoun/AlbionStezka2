@@ -46,7 +46,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
   <!-- SIDEBAR -->
   <aside class="sidenav" aria-label="Hlavní navigace">
     <div class="nav-top">
-      <a class="brand" href="#">
+      <a class="brand" href="homepage.php">
         <i class="fa-solid fa-layer-group"></i>
         <span>Albion Stezka</span>
       </a>
@@ -59,7 +59,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
 
     <div class="nav-bottom">
       <div class="section">Profil</div>
-      <a class="item" href="#"><i class="fa-solid fa-user"></i><span>Účet</span></a>
+      <a class="item" href="profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
       <a class="item" href="#"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
       <a class="item danger" href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
     </div>
@@ -75,7 +75,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
 
     <div class="content-wrap">
       <section class="page-head">
-        <h1>Ahoj, <?php echo htmlspecialchars($firstName); ?> 👋</h1>
+        <h1>Ahoj, <?php echo htmlspecialchars($firstName); ?>!👋</h1>
         <p class="muted">Tady máš rychlý přehled účtu, ať víš, že přihlášení funguje.</p>
       </section>
 
