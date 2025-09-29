@@ -3,6 +3,11 @@
 session_start();
 require_once __DIR__ . '/connect.php';
 
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
+    header('Location: index.php');
+    exit;
+}
+
 // Načtení uživatele – robustní na názvy sloupců
 $user = ['name' => 'Uživatel', 'email' => 'neznamy@example.com'];
 $sessionId    = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;

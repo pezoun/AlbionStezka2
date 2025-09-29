@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nickname  = trim($_POST['nickname'] ?? '');
     $email     = trim($_POST['email'] ?? '');
     $password  = $_POST['password'] ?? '';
+    $repeatPassword = $_POST['repeatPassword'] ?? '';
 
     if ($firstName === '' || $lastName === '' || $nickname === '' || $email === '' || $password === '') {
         $errors[] = 'Vyplň prosím všechna pole.';
@@ -21,6 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (strlen($password) < 8) {
         $errors[] = 'Heslo musí mít alespoň 8 znaků.';
+    }
+
+    // Kontrola shody hesel
+    if ($password !== $repeatPassword) {
+        die('Hesla se neshodují. Vraťte se zpět a opravte.');
+    }
+
+    // Kontrola síly hesla (minimálně 8 znaků, číslo, velké písmeno, speciální znak)
+    if (
+        strlen($password) < 8 ||
+        !preg_match('/[A-Z]/', $password) ||
+        !preg_match('/[0-9]/', $password) ||
+        !preg_match('/[^A-Za-z0-9]/', $password)
+    ) {
+        die('Heslo je příliš slabé. Vraťte se zpět a zadejte silnější heslo.');
     }
 
     // Kontrola unikátnosti emailu a přezdívky
