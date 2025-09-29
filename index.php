@@ -96,7 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
       <button class="btn" type="submit" id="signInButton">Přihlásit se</button>
 
       <div class="links">
-        <button type="button" id="signUpButton">Nemáš účet?</button>
+        <!-- Přihlášení -->
+<button type="button" id="signUpButton" data-action="show-signup">Nemáš účet?</button>
       </div>
     </form>
 
@@ -156,7 +157,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
       <button class="btn" type="submit">Zaregistrovat</button>
 
       <div class="links">
-        <button type="button" id="signInButtonReg">Už máš účet?</button>
+        <!-- Registrace -->
+<button type="button" id="signInButtonReg" data-action="show-signin">Už máš účet?</button>
       </div>
     </form>
   </div>
