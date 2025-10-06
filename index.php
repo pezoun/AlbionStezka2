@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/connect.php';
 
-// pokud je uživatel přihlášen, pošli ho na homepage
+
 if (!empty($_SESSION['user_id'])) {
     header('Location: homepage.php');
     exit;
@@ -97,11 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
       <div class="links">
         <!-- Přihlášení -->
-<button type="button" id="signUpButton" data-action="show-signup">Nemáš účet?</button>
+          <button type="button" id="signUpButton" data-action="show-signup">Nemáš účet?</button>
       </div>
     </form>
 
-    <!-- Registrace (skrytá, přepíná se JS) -->
+    <!-- Registrace  -->
     <form id="signup" method="post" action="register.php" class="form-grid" style="display:none" autocomplete="off">
       <h2 class="form-title">Registrace</h2>
 

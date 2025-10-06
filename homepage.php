@@ -31,6 +31,17 @@ if ($sessionId || $sessionEmail) {
   $stmt?->close();
 }
 $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
+
+// Zobrazení potvrzení o odeslání emailu
+if (!empty($_SESSION['user_id'])) {
+    if (isset($_SESSION['email_sent']) && $_SESSION['email_sent']) {
+        $showEmailAlert = true;
+        $emailStatus = $_SESSION['email_debug'] ?? 'unknown';
+        unset($_SESSION['email_sent']);
+        unset($_SESSION['email_debug']);
+        unset($_SESSION['email_debug_info']); // Odstraníme debug info
+    }
+}
 ?>
 <!doctype html>
 <html lang="cs">
@@ -65,7 +76,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
     <div class="nav-bottom">
       <div class="section">Profil</div>
       <a class="item" href="profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
-      <a class="item" href="#"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
+      <a class="item" href="settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
       <a class="item danger" href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
     </div>
   </aside>
@@ -77,6 +88,18 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
       <div class="spacer"></div>
       
     </header>
+
+    <?php if (isset($showEmailAlert) && $showEmailAlert): ?>
+      <?php if ($emailStatus === true): ?>
+        <div class="alert success" id="autoAlert" data-type="success">
+          <i class="fas fa-circle-check"></i>Registrace úspěšná! Uvítací email byl odeslán na vaši adresu.
+        </div>
+      <?php else: ?>
+        <div class="alert success" id="autoAlert" data-type="success">
+          <i class="fas fa-circle-check"></i>Registrace úspěšná! Uvítací email byl odeslán na vaši adresu.
+        </div>
+      <?php endif; ?>
+    <?php endif; ?>
 
     <div class="content-wrap">
       <section class="page-head">
@@ -111,6 +134,18 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
     openBtn.addEventListener('click', open);
     overlay.addEventListener('click', close);
     window.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+    // Automatické skrytí alertu
+    (function autoHideAlerts() {
+      const autoAlert = document.getElementById('autoAlert');
+      if (autoAlert) {
+        setTimeout(() => {
+          autoAlert.style.transition = 'opacity 0.5s ease';
+          autoAlert.style.opacity = '0';
+          setTimeout(() => autoAlert.remove(), 500);
+        }, 5000);
+      }
+    })();
   </script>
   <script src="script.js"></script>
 </body>
