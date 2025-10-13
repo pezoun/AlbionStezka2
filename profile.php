@@ -59,7 +59,8 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
 
       <nav class="menu">
         <a class="item active" href="#"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
-        <button class="item disabled" type="button" title="Brzy"><i class="fa-solid fa-hand-holding-heart"></i><span>Patroni</span><span class="tag">BRZY</span></button>
+        <a class="item active" href="patrons.php"><i class="fa-solid fa-list-check"></i><span>Patroni</span><span class="pill">0</span></a>
+      
       </nav>
     </div>
 

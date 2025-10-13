@@ -18,12 +18,11 @@ function smtp_mailer($to, $subject, $msg) {
         $mail->IsHTML(true);
         $mail->CharSet = 'UTF-8';
         
-        // Vypnuto debugování
+
         $mail->SMTPDebug = 0;
         
-        // TVŮJ GMAIL ÚČET
         $mail->Username = "tomaskotik08@gmail.com";
-        $mail->Password = "cjtlprfmnakatmph"; // App password bez mezer!
+        $mail->Password = "cjtlprfmnakatmph"; 
         
         $mail->SetFrom("tomaskotik08@gmail.com", "Albion stezka");
         $mail->Subject = $subject;

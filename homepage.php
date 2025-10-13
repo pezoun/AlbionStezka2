@@ -2,6 +2,7 @@
 // homepage.php
 session_start();
 require_once __DIR__ . '/connect.php';
+require_once __DIR__ . '/is_admin.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
     header('Location: index.php');
@@ -14,7 +15,7 @@ $sessionId    = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 $sessionEmail = $_SESSION['email'] ?? $_SESSION['user_email'] ?? null;
 
 if ($sessionId || $sessionEmail) {
-  if ($sessionId) { $stmt = $conn->prepare("SELECT * FROM users WHERE id = ? LIMIT 1"); $stmt->bind_param("i", $sessionId); }
+  if ($sessionId) { $stmt = $conn->prepare("SELECT * FROM users WHERE Id = ? LIMIT 1"); $stmt->bind_param("i", $sessionId); }
   else            { $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? LIMIT 1"); $stmt->bind_param("s", $sessionEmail); }
 
   if ($stmt && $stmt->execute()) {
@@ -32,14 +33,16 @@ if ($sessionId || $sessionEmail) {
 }
 $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
 
+// Je přihlášený admin?
+$loggedUserId = (int)($_SESSION['user_id'] ?? 0);
+$isAdmin = $loggedUserId > 0 ? is_admin($conn, $loggedUserId) : false;
+
 // Zobrazení potvrzení o odeslání emailu
 if (!empty($_SESSION['user_id'])) {
     if (isset($_SESSION['email_sent']) && $_SESSION['email_sent']) {
         $showEmailAlert = true;
         $emailStatus = $_SESSION['email_debug'] ?? 'unknown';
-        unset($_SESSION['email_sent']);
-        unset($_SESSION['email_debug']);
-        unset($_SESSION['email_debug_info']); // Odstraníme debug info
+        unset($_SESSION['email_sent'], $_SESSION['email_debug'], $_SESSION['email_debug_info']);
     }
 }
 ?>
@@ -69,7 +72,13 @@ if (!empty($_SESSION['user_id'])) {
 
       <nav class="menu">
         <a class="item active" href="#"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
-        <button class="item disabled" type="button" title="Brzy"><i class="fa-solid fa-hand-holding-heart"></i><span>Patroni</span><span class="tag">BRZY</span></button>
+        <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
+
+        <?php if ($isAdmin): ?>
+          <a class="item" href="manage_patrons.php">
+            <i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span>
+          </a>
+        <?php endif; ?>
       </nav>
     </div>
 
@@ -86,32 +95,25 @@ if (!empty($_SESSION['user_id'])) {
     <header class="topbar">
       <button class="burger" id="openNav" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
       <div class="spacer"></div>
-      
     </header>
 
     <?php if (isset($showEmailAlert) && $showEmailAlert): ?>
-      <?php if ($emailStatus === true): ?>
-        <div class="alert success" id="autoAlert" data-type="success">
-          <i class="fas fa-circle-check"></i>Registrace úspěšná! Uvítací email byl odeslán na vaši adresu.
-        </div>
-      <?php else: ?>
-        <div class="alert success" id="autoAlert" data-type="success">
-          <i class="fas fa-circle-check"></i>Registrace úspěšná! Uvítací email byl odeslán na vaši adresu.
-        </div>
-      <?php endif; ?>
+      <div class="alert success" id="autoAlert" data-type="success">
+        <i class="fas fa-circle-check"></i>Registrace úspěšná! Uvítací email byl odeslán na vaši adresu.
+      </div>
     <?php endif; ?>
 
     <div class="content-wrap">
       <section class="page-head">
-        <h1>Ahoj, <?php echo htmlspecialchars($firstName); ?>!👋</h1>
+        <h1>Ahoj, <?php echo htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8'); ?>!👋</h1>
         <p class="muted">Tady máš rychlý přehled účtu, ať víš, že přihlášení funguje.</p>
       </section>
 
       <section class="cards one">
         <article class="card">
           <div class="card-title"><i class="fa-solid fa-id-card"></i> Údaje o účtu</div>
-          <div class="kv"><span>Jméno</span><strong><?php echo htmlspecialchars($user['name']); ?></strong></div>
-          <div class="kv"><span>Email</span><strong><?php echo htmlspecialchars($user['email']); ?></strong></div>
+          <div class="kv"><span>Jméno</span><strong><?php echo htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8'); ?></strong></div>
+          <div class="kv"><span>Email</span><strong><?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?></strong></div>
           <div class="kv"><span>Stav</span><span class="chip ok">Aktivní</span></div>
           <div class="actions">
             <button class="btn primary"><i class="fa-solid fa-pen"></i> Upravit profil</button>

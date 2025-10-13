@@ -15,27 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Vyplň prosím všechna pole.';
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'Zadej platný email.';
+        showCustomAlert('Zadejte platný email!');
+        e.preventDefault();
+        return;
     }
     if (strlen($nickname) < 3 || strlen($nickname) > 50) {
-        $errors[] = 'Přezdívka musí mít 3–50 znaků.';
+        showCustomAlert('Přezdívka je moc krátká nebo dlouhá!');
+        e.preventDefault();
+        return;
     }
     if (strlen($password) < 8) {
-        $errors[] = 'Heslo musí mít alespoň 8 znaků.';
+        showCustomAlert('Heslo je příliš slabé!');
+        e.preventDefault();
+        return;
     }
 
-    if ($password !== $repeatPassword) {
-        die('Hesla se neshodují. Vraťte se zpět a opravte.');
-    }
-
-    if (
-        strlen($password) < 8 ||
-        !preg_match('/[A-Z]/', $password) ||
-        !preg_match('/[0-9]/', $password) ||
-        !preg_match('/[^A-Za-z0-9]/', $password)
-    ) {
-        die('Heslo je příliš slabé. Vraťte se zpět a zadejte silnější heslo.');
-    }
+   
 
     // Kontrola unikátnosti emailu a přezdívky
     if (!$errors) {
@@ -57,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('sssss', $firstName, $lastName, $nickname, $email, $hash);
         if ($stmt->execute()) {
-            // Odeslání emailu po úspěšné registraci
             $subject = "Vítejte v Albion stezce! 🎉";
             $message = "
                 <html>
@@ -96,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <ul>
                             <li>📊 Sledování tvých sportovních aktivit</li>
                             <li>🎯 Stanovování a plnění cílů</li>
-                            <li>👥 Spojení s dalšími sportovci</li>
                             <li>🏆 Získávání odznaků a úspěchů</li>
                         </ul>
                     
@@ -115,7 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once __DIR__ . '/emailSent.php';
             $emailResult = smtp_mailer($email, $subject, $message);
             
-            // Auto login po registraci
             $_SESSION['user_id']   = $stmt->insert_id;
             $_SESSION['firstName'] = $firstName;
             $_SESSION['lastName']  = $lastName;
@@ -133,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Když jsou chyby, vrať se na index s parametrem a zprávou
 $query = http_build_query(['form' => 'register']);
 $_SESSION['register_errors'] = $errors;
 header('Location: index.php?' . $query);
