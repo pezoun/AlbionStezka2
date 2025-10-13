@@ -2,12 +2,16 @@
 // homepage.php
 session_start();
 require_once __DIR__ . '/connect.php';
+require_once __DIR__ . '/is_admin.php';
 
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
     header('Location: index.php');
     exit;
 }
+
+$loggedUserId = (int)($_SESSION['user_id'] ?? 0);
+$isAdmin = $loggedUserId > 0 ? is_admin($conn, $loggedUserId) : false;
 
 // Načtení uživatele – robustní na názvy sloupců
 $user = ['name' => 'Uživatel', 'email' => 'neznamy@example.com'];
@@ -59,8 +63,13 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
 
       <nav class="menu">
         <a class="item active" href="#"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
-        <a class="item active" href="patrons.php"><i class="fa-solid fa-list-check"></i><span>Patroni</span><span class="pill">0</span></a>
-      
+        <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
+
+        <?php if ($isAdmin): ?>
+          <a class="item" href="manage_patrons.php">
+            <i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span>
+          </a>
+        <?php endif; ?>
       </nav>
     </div>
 
