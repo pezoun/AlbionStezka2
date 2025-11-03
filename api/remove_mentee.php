@@ -123,4 +123,4 @@ if ($emailResult) {
     echo json_encode(['ok' => false, 'msg' => 'Chyba při odesílání emailu.']);
     exit;
 }
-?> // kokot
+?>
