@@ -2,11 +2,15 @@
 // patrons.php
 session_start();
 require_once __DIR__ . '/connect.php';
+require_once __DIR__ . '/is_admin.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
   header('Location: index.php');
   exit;
 }
+// Je přihlášený admin?
+$loggedUserId = (int)($_SESSION['user_id'] ?? 0);
+$isAdmin = $loggedUserId > 0 ? is_admin($conn, $loggedUserId) : false;
 
 function is_pdo($db){ return isset($db) && $db instanceof PDO; }
 function is_mysqli($db){ return isset($db) && $db instanceof mysqli; }
@@ -107,11 +111,19 @@ if (!$isPatron && !$hasPatron) {
   <aside class="sidenav" aria-label="Hlavní navigace">
     <div class="nav-top">
       <a class="brand" href="homepage.php">
-        <i class="fa-solid fa-layer-group"></i><span>Albion Stezka</span>
+        <i class="fa-solid fa-layer-group"></i>
+        <span>Albion Stezka</span>
       </a>
+
       <nav class="menu">
-        <a class="item" href="homepage.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
-        <a class="item active" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
+        <a class="item active" href="#"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
+        <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
+
+        <?php if ($isAdmin): ?>
+          <a class="item" href="manage_patrons.php">
+            <i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span>
+          </a>
+        <?php endif; ?>
       </nav>
     </div>
     <div class="nav-bottom">
