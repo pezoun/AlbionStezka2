@@ -62,7 +62,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
       </a>
 
       <nav class="menu">
-        <a class="item active" href="#"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
+        <a class="item active" href="homepage.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
 
         <?php if ($isAdmin): ?>
