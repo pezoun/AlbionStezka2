@@ -96,34 +96,187 @@ if (!empty($_SESSION['user_id'])) {
       <button class="burger" id="openNav" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
       <div class="spacer"></div>
     </header>
-
-    <?php if (isset($showEmailAlert) && $showEmailAlert): ?>
+<?php if (isset($showEmailAlert) && $showEmailAlert): ?>
       <div class="alert success" id="autoAlert" data-type="success">
         <i class="fas fa-circle-check"></i>Registrace úspěšná! Uvítací email byl odeslán na vaši adresu.
       </div>
-    <?php endif; ?>
-
+<?php endif; ?>
     <div class="content-wrap">
+      <!-- Můj začátek -->
       <section class="page-head">
-        <h1>Ahoj, <?php echo htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8'); ?>!👋</h1>
-        <p class="muted">Tady máš rychlý přehled účtu, ať víš, že přihlášení funguje.</p>
+        <h1>Můj začátek</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category green">
+          <h3>Skauting</h3>
+          <p class="muted">Splním všechny</p>
+        </article>
+        <article class="card category green">
+          <h3>Tábornické dovednosti</h3>
+          <p class="muted">Splním všechny</p>
+        </article>
+        <article class="card category green">
+          <h3>Orientace v přírodě</h3>
+          <p class="muted">Splním všechny</p>
+        </article>
       </section>
 
-      <section class="cards one">
-        <article class="card">
-          <div class="card-title"><i class="fa-solid fa-id-card"></i> Údaje o účtu</div>
-          <div class="kv"><span>Jméno</span><strong><?php echo htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8'); ?></strong></div>
-          <div class="kv"><span>Email</span><strong><?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?></strong></div>
-          <div class="kv"><span>Stav</span><span class="chip ok">Aktivní</span></div>
-          <div class="actions">
-            <button class="btn primary"><i class="fa-solid fa-pen"></i> Upravit profil</button>
-            <button class="btn ghost">Změnit heslo</button>
-          </div>
+      <!-- Moje tělo -->
+      <section class="page-head">
+        <h1>Moje tělo</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category orange">
+          <h3>Sport, udržování dobré kondice</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+        <article class="card category orange">
+          <h3>Zdravý životní styl</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+        <article class="card category orange">
+          <h3>Vědomosti o těle</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+      </section>
+
+      <!-- Znalosti a dovednosti -->
+      <section class="page-head">
+        <h1>Znalosti a dovednosti</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category blue">
+          <h3>Praktický život</h3>
+          <p class="muted">Splním alespoň pět</p>
+        </article>
+        <article class="card category blue">
+          <h3>Moje zájmy</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+        <article class="card category blue">
+          <h3>Poznávání přírody</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+      </section>
+
+      <!-- Vnímavost -->
+      <section class="page-head">
+        <h1>Vnímavost</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category purple">
+          <h3>Moje city</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+        <article class="card category purple">
+          <h3>Umělecká tvořivost</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+        <article class="card category purple">
+          <h3>Vnímání přírody</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+      </section>
+
+      <!-- Společenství a občanství -->
+      <section class="page-head">
+        <h1>Společenství a občanství</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category red">
+          <h3>Vyjadřování (schopnost komunikace)</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+        <article class="card category red">
+          <h3>Spolupráce (schopnost spolupracovat s druhými)</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+        <article class="card category red">
+          <h3>Respekt</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+      </section>
+      <section class="cards three">
+        <article class="card category red">
+          <h3>Služba potřebným</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+        <article class="card category red">
+          <h3>Nežiji sám</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+        <article class="card category red">
+          <h3>Ochrana přírody, ekologie</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+      </section>
+
+      <!-- Duchovní život -->
+      <section class="page-head">
+        <h1>Duchovní život</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category teal">
+          <h3>Hledání duchovních hodnot</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+        <article class="card category teal">
+          <h3>Svědomí</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+        <article class="card category teal">
+          <h3>Sebepoznání a osobní rozvoj</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+      </section>
+      <section class="cards three">
+        <article class="card category teal">
+          <h3>Vztah k druhým</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+      </section>
+
+      <!-- Pevný charakter -->
+      <section class="page-head">
+        <h1>Pevný charakter</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category yellow">
+          <h3>Sebeovládání</h3>
+          <p class="muted">Splním alespoň jednu</p>
+        </article>
+        <article class="card category yellow">
+          <h3>Zodpovědnost</h3>
+          <p class="muted">Splním alespoň dvě</p>
+        </article>
+      </section>
+
+      <!-- Příprava na vedení -->
+      <section class="page-head">
+        <h1>Příprava na vedení</h1>
+      </section>
+      <section class="cards three">
+        <article class="card category pink">
+          <h3>Družinová schůzka</h3>
+          <p class="muted">Splním všechny</p>
+        </article>
+        <article class="card category pink">
+          <h3>Hry</h3>
+          <p class="muted">Splním všechny</p>
+        </article>
+        <article class="card category pink">
+          <h3>Bezpečnost</h3>
+          <p class="muted">Splním všechny</p>
+        </article>
+      </section>
+      <section class="cards three">
+        <article class="card category pink">
+          <h3>Zdravověda</h3>
+          <p class="muted">Splním všechny</p>
         </article>
       </section>
     </div>
   </main>
-
   <div class="overlay" id="overlay"></div>
 
   <script>
