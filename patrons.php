@@ -334,7 +334,7 @@ if (!$isPatron && !$hasPatron) {
       }
     });
 
-    // Potvrzení výběru patrona
+    // Potvrzení výběru patrona a odeslání žádosti
     confirmChoosePatronBtn.addEventListener('click', async () => {
       if (!chosenPatron.id) return;
       try {
