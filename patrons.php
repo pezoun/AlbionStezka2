@@ -390,6 +390,7 @@ if (!$isPatron && !$hasPatron) {
     });
 
     // mobilní sidenav
+    // ahoj
     (function mobileSidebar() {
       const openBtn = document.getElementById('openNav');
       const overlay = document.getElementById('overlay');
