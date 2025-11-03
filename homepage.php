@@ -262,17 +262,17 @@ if (!empty($_SESSION['user_id'])) {
         </article>
         <article class="card category pink">
           <h3>Hry</h3>
-          <p class="muted">Splním všechny</p>
+          <p class="muted">Splním všechny, váha 1/5</p>
         </article>
         <article class="card category pink">
           <h3>Bezpečnost</h3>
-          <p class="muted">Splním všechny</p>
+          <p class="muted">Splním všechny, váha 1/6</p>
         </article>
       </section>
       <section class="cards three">
         <article class="card category pink">
           <h3>Zdravověda</h3>
-          <p class="muted">Splním všechny</p>
+          <p class="muted">Splním všechny, váha 1/6</p>
         </article>
       </section>
     </div>
