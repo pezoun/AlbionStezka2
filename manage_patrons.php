@@ -2,13 +2,9 @@
 // manage_patrons.php
 session_start();
 require_once __DIR__ . '/connect.php';
-require_once __DIR__ . '/is_admin.php'; // ← helper s funkcí is_admin(mysqli $conn, int $userId): bool
+require_once __DIR__ . '/is_admin.php';
 
-// Přihlášení + role admin (tvrdá kontrola)
-if (!isset($_SESSION['user_id']) || !is_admin($conn, (int)$_SESSION['user_id'])) {
-  http_response_code(403);
-  exit('Přístup jen pro adminy.');
-}
+if (!isset($_SESSION['user_id'])) { header('Location: index.php'); exit; }
 
 // malá helper funkce: najdi uživatele podle emailu/nickname
 function findUserId(mysqli $conn, string $identifier): ?int {
@@ -108,28 +104,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <section class="cards one">
         <article class="card">
           <div class="card-title"><i class="fa-solid fa-user-gear"></i> Povýšit / Odebrat</div>
-          <form method="post" class="kv form-manage" style="grid-template-columns: 200px 1fr;">
-  <label for="identifier">Uživatel</label>
-
-  <div class="icon-input">
-    <i class="fa-solid fa-user"></i>
-    <input id="identifier" name="identifier" type="text"
-           placeholder="email@domena.cz nebo nickname" required
-           autocomplete="off" />
-    <div class="form-help">Stačí email nebo přezdívka.</div>
-  </div>
-
-  <div></div>
-  <div class="btn-row">
-    <button class="btn primary" name="action" value="make">
-      <i class="fa-solid fa-arrow-up"></i> Udělat patrona
-    </button>
-    <button class="btn ghost" name="action" value="remove">
-      <i class="fa-solid fa-arrow-down"></i> Odebrat patrona
-    </button>
-  </div>
-</form>
-
+          <form method="post" class="kv" style="grid-template-columns: 180px 1fr;">
+            <label for="identifier">Uživatel</label>
+            <input id="identifier" name="identifier" type="text" placeholder="Email / Přezdívka" required>
+            <div></div>
+            <div class="actions">
+              <button class="btn primary" name="action" value="make"><i class="fa-solid fa-arrow-up"></i> Vytvořit patrona</button>
+              <button class="btn ghost" name="action" value="remove"><i class="fa-solid fa-arrow-down"></i> Odebrat patrona</button>
+            </div>
+          </form>
         </article>
       </section>
     </div>
@@ -139,15 +122,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="script.js"></script>
 </body>
 </html>
-
-<script>
-  // autofocus
-  document.getElementById('identifier')?.focus();
-
-  // disable buttons během submitu
-  document.querySelector('.form-manage')?.addEventListener('submit', function (e) {
-    const btns = this.querySelectorAll('button[type="submit"], button[name="action"]');
-    btns.forEach(b => { b.disabled = true; b.classList.add('is-loading'); });
-  });
-</script>
-
