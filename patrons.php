@@ -110,7 +110,7 @@ if (!$isPatron && !$hasPatron) {
         <i class="fa-solid fa-layer-group"></i><span>Albion Stezka</span>
       </a>
       <nav class="menu">
-        <a class="item" href="homepage.php"><i class="fa-solid fa-list-check"></i><span>Školy</span><span class="pill">0</span></a>
+        <a class="item" href="homepage.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
         <a class="item active" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
       </nav>
     </div>
