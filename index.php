@@ -2,7 +2,6 @@
 session_start();
 require_once __DIR__ . '/connect.php';
 
-
 if (!empty($_SESSION['user_id'])) {
     header('Location: homepage.php');
     exit;
@@ -78,26 +77,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <form id="signIn" method="post" class="form-grid" autocomplete="on">
       <h1 class="form-title">Přihlášení</h1>
       <input type="hidden" name="action" value="login">
-      <div class="input-group">
-        <label for="identifier">Email nebo přezdívka</label>
-        <div class="input-with-icon">
-          <input type="text" id="identifier" name="identifier" placeholder="email@email.cz" required>
+      
+      <div id="loginStep1">
+        <div class="input-group">
+          <label for="identifier">Email nebo přezdívka</label>
+          <div class="input-with-icon">
+            <input type="text" id="identifier" name="identifier" placeholder="email@email.cz" required>
+          </div>
         </div>
+
+        <div class="input-group">
+          <label for="loginPassword">Heslo</label>
+          <div class="input-with-icon">
+            <input type="password" id="loginPassword" name="password" placeholder="********" required>
+            <button type="button" class="toggle-password" data-target="loginPassword">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn" type="button" id="signInButton">Přihlásit se</button>
       </div>
 
-      <div class="input-group">
-    <label for="loginPassword">Heslo</label>
-    <div class="input-with-icon">
-    <input type="password" id="loginPassword" name="password" placeholder="********" required>
-    <button type="button" class="toggle-password" data-target="loginPassword">
-      <i class="fa-solid fa-eye"></i>
-    </button>
-    </div>
-    </div>
+      <div id="loginStep2" style="display: none;">
+        <div style="background: #f0f4ff; padding: 20px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #2B44FF; text-align: center;">
+          <p style="margin: 0; font-weight: 600;"><i class="fa-solid fa-shield-halved"></i> Dvoufázové ověření</p>
+          <p style="margin: 10px 0 0 0; color: #1e40af; font-size: 14px;">Zadej 6místný kód z emailu</p>
+        </div>
 
-      <button class="btn" type="submit" id="signInButton">Přihlásit se</button>
+        <div style="margin: 30px 0;">
+          <label style="display: block; margin-bottom: 10px; font-weight: 600; text-align: center;">Ověřovací kód:</label>
+          <div id="loginCodeInputs" style="display: flex; gap: 10px; justify-content: center;">
+            <input type="text" maxlength="1" class="login-code-input" data-index="0" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+            <input type="text" maxlength="1" class="login-code-input" data-index="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+            <input type="text" maxlength="1" class="login-code-input" data-index="2" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+            <input type="text" maxlength="1" class="login-code-input" data-index="3" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+            <input type="text" maxlength="1" class="login-code-input" data-index="4" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+            <input type="text" maxlength="1" class="login-code-input" data-index="5" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+          </div>
+        </div>
 
-      <div class="links">
+        <p style="color: #6b7280; font-size: 14px; text-align: center; margin-bottom: 20px;">
+          <i class="fa-solid fa-clock"></i> Kód je platný 10 minut
+        </p>
+
+        <button class="btn" type="button" id="verify2FAButton">
+          <i class="fa-solid fa-check"></i> Ověřit kód
+        </button>
+
+        <button class="btn ghost" type="button" id="backToLoginButton" style="margin-top: 10px; background: transparent; border: 1px solid var(--border-secondary); color: var(--text-secondary);">
+          <i class="fa-solid fa-arrow-left"></i> Zpět na přihlášení
+        </button>
+      </div>
+
+      <div class="links" id="loginLinks">
         <!-- Přihlášení -->
           <button type="button" id="signUpButton" data-action="show-signup">Nemáš účet?</button>
       </div>
@@ -167,5 +200,145 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
   </div>
 
   <script src="script.js"></script>
+  <script>
+    // 2FA funkcionalita pro přihlášení
+    let currentUserId = 0;
+
+    // Tlačítko přihlášení
+    document.getElementById('signInButton')?.addEventListener('click', async function() {
+      const identifier = document.getElementById('identifier').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      
+      if (!identifier || !password) {
+        if (window.showCustomAlert) showCustomAlert('Vyplň přihlašovací údaje.');
+        return;
+      }
+      
+      const button = this;
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Přihlašuji...';
+      
+      try {
+        const body = new URLSearchParams();
+        body.set('action', 'check_credentials');
+        body.set('identifier', identifier);
+        body.set('password', password);
+        
+        const res = await fetch('api/login_2fa.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body
+        });
+        
+        const json = await res.json();
+        
+        if (json.ok) {
+          if (json.requires_2fa) {
+            // Uživatel má zapnuté 2FA
+            currentUserId = json.user_id;
+            document.getElementById('loginStep1').style.display = 'none';
+            document.getElementById('loginStep2').style.display = 'block';
+            document.getElementById('loginLinks').style.display = 'none';
+            resetLoginCodeInputs();
+            if (window.showSuccessToast) showSuccessToast(json.msg);
+          } else {
+            // Uživatel nemá 2FA - přihlásit rovnou
+            window.location.href = json.redirect || 'homepage.php';
+          }
+        } else {
+          if (window.showCustomAlert) showCustomAlert(json.msg);
+        }
+      } catch (err) {
+        if (window.showCustomAlert) showCustomAlert('Chyba sítě. Zkus to prosím znovu.');
+      } finally {
+        button.disabled = false;
+        button.innerHTML = 'Přihlásit se';
+      }
+    });
+    
+    // Ověření 2FA kódu
+    document.getElementById('verify2FAButton')?.addEventListener('click', async function() {
+      const codeInputs = document.querySelectorAll('.login-code-input');
+      const code = Array.from(codeInputs).map(input => input.value).join('');
+      
+      if (code.length !== 6) {
+        if (window.showCustomAlert) showCustomAlert('Zadej celý 6místný kód.');
+        return;
+      }
+      
+      const button = this;
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Ověřuji...';
+      
+      try {
+        const body = new URLSearchParams();
+        body.set('action', 'verify_2fa');
+        body.set('user_id', currentUserId);
+        body.set('code', code);
+        
+        const res = await fetch('api/login_2fa.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body
+        });
+        
+        const json = await res.json();
+        
+        if (json.ok) {
+          if (window.showSuccessToast) showSuccessToast(json.msg);
+          setTimeout(() => {
+            window.location.href = json.redirect || 'homepage.php';
+          }, 1000);
+        } else {
+          if (window.showCustomAlert) showCustomAlert(json.msg);
+          resetLoginCodeInputs();
+        }
+      } catch (err) {
+        if (window.showCustomAlert) showCustomAlert('Chyba sítě. Zkus to prosím znovu.');
+      } finally {
+        button.disabled = false;
+        button.innerHTML = '<i class="fa-solid fa-check"></i> Ověřit kód';
+      }
+    });
+    
+    // Zpět na přihlášení
+    document.getElementById('backToLoginButton')?.addEventListener('click', function() {
+      document.getElementById('loginStep1').style.display = 'block';
+      document.getElementById('loginStep2').style.display = 'none';
+      document.getElementById('loginLinks').style.display = 'flex';
+      resetLoginCodeInputs();
+    });
+    
+    // Reset inputů pro kód
+    function resetLoginCodeInputs() {
+      const inputs = document.querySelectorAll('.login-code-input');
+      inputs.forEach(input => input.value = '');
+      if (inputs[0]) inputs[0].focus();
+    }
+    
+    // Automatický přesun mezi inputy kódu
+    document.addEventListener('input', function(e) {
+      if (e.target.classList.contains('login-code-input')) {
+        const input = e.target;
+        const index = parseInt(input.dataset.index);
+        const value = input.value;
+        
+        if (value && index < 5) {
+          const nextInput = document.querySelector(`.login-code-input[data-index="${index + 1}"]`);
+          if (nextInput) nextInput.focus();
+        }
+        
+        // Automaticky zkontroluj celý kód
+        if (index === 5 && value) {
+          const allInputs = document.querySelectorAll('.login-code-input');
+          const fullCode = Array.from(allInputs).map(inp => inp.value).join('');
+          if (fullCode.length === 6) {
+            // Kód je kompletní - automaticky ověřit
+            document.getElementById('verify2FAButton').click();
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
