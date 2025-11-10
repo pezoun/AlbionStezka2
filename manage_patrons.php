@@ -6,7 +6,6 @@ require_once __DIR__ . '/is_admin.php';
 
 if (!isset($_SESSION['user_id'])) { header('Location: index.php'); exit; }
 
-// malá helper funkce: najdi uživatele podle emailu/nickname
 function findUserId(mysqli $conn, string $identifier): ?int {
   // zkusíme nejdřív email
   $sql = "SELECT Id FROM users WHERE email = ? LIMIT 1";
@@ -24,6 +23,11 @@ function findUserId(mysqli $conn, string $identifier): ?int {
   if ($row = $res->fetch_assoc()) { return (int)$row['Id']; }
   return null;
 }
+
+
+// Je přihlášený admin?
+$loggedUserId = (int)($_SESSION['user_id'] ?? 0);
+$isAdmin = $loggedUserId > 0 ? is_admin($conn, $loggedUserId) : false;
 
 $msg = null; $error = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
