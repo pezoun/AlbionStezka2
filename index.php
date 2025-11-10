@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <label for="registerPassword">Heslo</label>
         <div class="input-with-icon">
           <input type="password" id="registerPassword" name="password" minlength="8" required>
-          <button class="toggle-password" data-target="registerPassword"><i class="fa-solid fa-eye"></i></button>
+          <button type="button" class="toggle-password" data-target="registerPassword"><i class="fa-solid fa-eye"></i></button>
         </div>
         <div style="width:100%;height:6px;background:#eee;border-radius:4px;overflow:hidden;margin-top:6px;">
           <div id="strengthBar" style="height:100%;width:0%;background:#c00;transition:width 0.3s,background 0.3s;"></div>
@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <label for="repeatPassword">Zopakuj heslo</label>
         <div class="input-with-icon">
           <input type="password" id="repeatPassword" name="repeatPassword" minlength="8" required>
-          <button class="toggle-password" data-target="repeatPassword"><i class="fa-solid fa-eye"></i></button>
+          <button type="button" class="toggle-password" data-target="repeatPassword"><i class="fa-solid fa-eye"></i></button>
         </div>
       </div>
 
