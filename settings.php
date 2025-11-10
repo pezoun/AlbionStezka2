@@ -194,8 +194,6 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
         </div>
       </section>
 
-      
-
       <!-- Soukromí a bezpečnost -->
       <section class="settings-section">
         <div class="section-header">
@@ -235,7 +233,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
               <span class="setting-desc">Přidej extra vrstvu zabezpečení pro tvůj účet</span>
             </div>
             <button class="btn ghost btn-sm" id="setup2FA">
-              <i class="fa-solid fa-key"></i> Nastavit
+              <i class="fa-solid fa-key"></i> <span id="2faButtonText">Nastavit</span>
             </button>
           </div>
 
@@ -346,6 +344,70 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
     </div>
   </div>
 
+  <!-- Modal pro 2FA nastavení -->
+  <div class="modal" id="twoFactorModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-shield-halved"></i> Dvoufázové ověření</h2>
+        <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <!-- Krok 1: Zapnutí 2FA -->
+        <div id="2faStep1">
+          <p>Chceš zapnout dvoufázové ověření pro svůj účet?</p>
+          <p style="color: #6b7280; font-size: 14px; margin-top: 10px;">
+            <i class="fa-solid fa-circle-info"></i> Po zapnutí budeš při každém přihlášení potřebovat ověřovací kód z emailu.
+          </p>
+        </div>
+        
+        <!-- Krok 2: Zadání kódu -->
+        <div id="2faStep2" style="display: none;">
+          <div style="background: #f0f4ff; padding: 20px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #2B44FF;">
+            <p style="margin: 0; font-weight: 600;"><i class="fa-solid fa-envelope"></i> Ověřovací kód odeslán</p>
+            <p style="margin: 10px 0 0 0; color: #1e40af; font-size: 14px;">Zadej 6místný kód z emailu</p>
+          </div>
+
+          <div style="margin: 30px 0;">
+            <label style="display: block; margin-bottom: 10px; font-weight: 600; text-align: center;">Ověřovací kód:</label>
+            <div id="codeInputs" style="display: flex; gap: 10px; justify-content: center;">
+              <input type="text" maxlength="1" class="code-input" data-index="0" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+              <input type="text" maxlength="1" class="code-input" data-index="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+              <input type="text" maxlength="1" class="code-input" data-index="2" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+              <input type="text" maxlength="1" class="code-input" data-index="3" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+              <input type="text" maxlength="1" class="code-input" data-index="4" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+              <input type="text" maxlength="1" class="code-input" data-index="5" style="width: 50px; height: 60px; text-align: center; font-size: 24px; font-weight: bold; border: 2px solid var(--border-secondary); border-radius: 8px; font-family: monospace;">
+            </div>
+          </div>
+
+          <p style="color: #6b7280; font-size: 14px; text-align: center; margin-bottom: 20px;">
+            <i class="fa-solid fa-clock"></i> Kód je platný 10 minut
+          </p>
+        </div>
+
+        <!-- Krok 3: Vypnutí 2FA -->
+        <div id="2faStep3" style="display: none;">
+          <p>Chceš vypnout dvoufázové ověření?</p>
+          <div class="input-group" style="margin-top: 20px;">
+            <label for="disable2faPassword">Potvrď heslem</label>
+            <div class="input-with-icon">
+              <input type="password" id="disable2faPassword" placeholder="Tvoje heslo" required>
+              <button type="button" class="toggle-password" data-target="disable2faPassword">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn ghost" data-close-modal>Zrušit</button>
+        <button class="btn primary" id="2faActionButton">
+          <i class="fa-solid fa-check"></i> Pokračovat
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay" id="overlay"></div>
   <script src="script.js"></script>
   <script>
@@ -369,9 +431,6 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
       patronNotif: document.getElementById('patronNotif'),
       taskNotif: document.getElementById('taskNotif'),
       achievementNotif: document.getElementById('achievementNotif'),
-      languageSelect: document.getElementById('languageSelect'),
-      dateFormat: document.getElementById('dateFormat'),
-      timeFormat: document.getElementById('timeFormat'),
       profileVisibility: document.getElementById('profileVisibility'),
       showEmail: document.getElementById('showEmail'),
       autoSave: document.getElementById('autoSave')
@@ -476,10 +535,235 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
       }
     });
 
-    // 2FA setup
-    document.getElementById('setup2FA')?.addEventListener('click', function() {
-      alert('Funkce dvoufázového ověření bude brzy dostupná!');
+    // 2FA funkcionalita
+    let current2FAMode = ''; // 'enable' nebo 'disable'
+    let current2FAStep = 1;
+    const twoFactorModal = document.getElementById('twoFactorModal');
+    const setup2FABtn = document.getElementById('setup2FA');
+
+    // Načti stav 2FA při načtení stránky
+    async function load2FAStatus() {
+      try {
+        const res = await fetch('api/get_2fa_status.php');
+        const json = await res.json();
+        
+        if (json.ok) {
+          const buttonText = document.getElementById('2faButtonText');
+          if (json.enabled) {
+            buttonText.textContent = 'Vypnout';
+          } else {
+            buttonText.textContent = 'Zapnout';
+          }
+        }
+      } catch (err) {
+        console.error('Chyba při načítání stavu 2FA:', err);
+      }
+    }
+
+    // Zobraz konkrétní krok 2FA
+    function show2FAStep(step) {
+      document.getElementById('2faStep1').style.display = step === 1 ? 'block' : 'none';
+      document.getElementById('2faStep2').style.display = step === 2 ? 'block' : 'none';
+      document.getElementById('2faStep3').style.display = step === 3 ? 'block' : 'none';
+      
+      const actionButton = document.getElementById('2faActionButton');
+      if (step === 1) {
+        actionButton.innerHTML = '<i class="fa-solid fa-check"></i> Zapnout 2FA';
+      } else if (step === 2) {
+        actionButton.innerHTML = '<i class="fa-solid fa-check"></i> Ověřit kód';
+      } else if (step === 3) {
+        actionButton.innerHTML = '<i class="fa-solid fa-check"></i> Vypnout 2FA';
+      }
+    }
+
+    // Reset 2FA inputů
+    function reset2FAInputs() {
+      const inputs = document.querySelectorAll('.code-input');
+      inputs.forEach(input => input.value = '');
+      if (inputs[0]) inputs[0].focus();
+    }
+
+    // Otevři modal pro 2FA
+    setup2FABtn?.addEventListener('click', async function() {
+      // Načti aktuální stav
+      try {
+        const res = await fetch('api/get_2fa_status.php');
+        const json = await res.json();
+        
+        if (json.ok) {
+          if (json.enabled) {
+            current2FAMode = 'disable';
+            current2FAStep = 3;
+            show2FAStep(3);
+          } else {
+            current2FAMode = 'enable';
+            current2FAStep = 1;
+            show2FAStep(1);
+          }
+          twoFactorModal.classList.add('open');
+          twoFactorModal.setAttribute('aria-hidden', 'false');
+        }
+      } catch (err) {
+        if (window.showCustomAlert) showCustomAlert('Chyba při načítání stavu 2FA.');
+      }
     });
+
+    // 2FA akce tlačítko
+    document.getElementById('2faActionButton')?.addEventListener('click', async function() {
+      const button = this;
+      
+      if (current2FAMode === 'enable' && current2FAStep === 1) {
+        // Krok 1: Požádat o kód
+        button.disabled = true;
+        button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Odesílám...';
+        
+        try {
+          const body = new URLSearchParams();
+          body.set('action', 'enable');
+          
+          const res = await fetch('api/toggle_2fa.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body
+          });
+          
+          const json = await res.json();
+          
+          if (json.ok) {
+            current2FAStep = 2;
+            show2FAStep(2);
+            reset2FAInputs();
+            if (window.showSuccessToast) showSuccessToast('Ověřovací kód byl odeslán na email!');
+          } else {
+            if (window.showCustomAlert) showCustomAlert(json.msg);
+          }
+        } catch (err) {
+          if (window.showCustomAlert) showCustomAlert('Chyba sítě. Zkus to prosím znovu.');
+        } finally {
+          button.disabled = false;
+          button.innerHTML = '<i class="fa-solid fa-check"></i> Ověřit kód';
+        }
+        
+      } else if (current2FAMode === 'enable' && current2FAStep === 2) {
+        // Krok 2: Ověřit kód
+        const codeInputs = document.querySelectorAll('.code-input');
+        const code = Array.from(codeInputs).map(input => input.value).join('');
+        
+        if (code.length !== 6) {
+          if (window.showCustomAlert) showCustomAlert('Zadej celý 6místný kód.');
+          return;
+        }
+        
+        button.disabled = true;
+        button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Ověřuji...';
+        
+        try {
+          const body = new URLSearchParams();
+          body.set('action', 'verify');
+          body.set('code', code);
+          
+          const res = await fetch('api/toggle_2fa.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body
+          });
+          
+          const json = await res.json();
+          
+          if (json.ok) {
+            if (window.showSuccessToast) showSuccessToast(json.msg);
+            twoFactorModal.classList.remove('open');
+            twoFactorModal.setAttribute('aria-hidden', 'true');
+            load2FAStatus(); // Aktualizuj stav tlačítka
+          } else {
+            if (window.showCustomAlert) showCustomAlert(json.msg);
+            reset2FAInputs();
+          }
+        } catch (err) {
+          if (window.showCustomAlert) showCustomAlert('Chyba sítě. Zkus to prosím znovu.');
+        } finally {
+          button.disabled = false;
+          button.innerHTML = '<i class="fa-solid fa-check"></i> Ověřit kód';
+        }
+        
+      } else if (current2FAMode === 'disable' && current2FAStep === 3) {
+        // Krok 3: Vypnout 2FA
+        const password = document.getElementById('disable2faPassword').value;
+        
+        if (!password) {
+          if (window.showCustomAlert) showCustomAlert('Zadej heslo pro potvrzení.');
+          return;
+        }
+        
+        button.disabled = true;
+        button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Vypínám...';
+        
+        try {
+          const body = new URLSearchParams();
+          body.set('action', 'disable');
+          body.set('password', password);
+          
+          const res = await fetch('api/toggle_2fa.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body
+          });
+          
+          const json = await res.json();
+          
+          if (json.ok) {
+            if (window.showSuccessToast) showSuccessToast(json.msg);
+            twoFactorModal.classList.remove('open');
+            twoFactorModal.setAttribute('aria-hidden', 'true');
+            document.getElementById('disable2faPassword').value = '';
+            load2FAStatus(); // Aktualizuj stav tlačítka
+          } else {
+            if (window.showCustomAlert) showCustomAlert(json.msg);
+          }
+        } catch (err) {
+          if (window.showCustomAlert) showCustomAlert('Chyba sítě. Zkus to prosím znovu.');
+        } finally {
+          button.disabled = false;
+          button.innerHTML = '<i class="fa-solid fa-check"></i> Vypnout 2FA';
+        }
+      }
+    });
+
+    // Automatický přesun mezi inputy kódu
+    document.addEventListener('input', function(e) {
+      if (e.target.classList.contains('code-input')) {
+        const input = e.target;
+        const index = parseInt(input.dataset.index);
+        const value = input.value;
+        
+        if (value && index < 5) {
+          const nextInput = document.querySelector(`.code-input[data-index="${index + 1}"]`);
+          if (nextInput) nextInput.focus();
+        }
+        
+        // Automaticky zkontroluj celý kód
+        if (index === 5 && value) {
+          const allInputs = document.querySelectorAll('.code-input');
+          const fullCode = Array.from(allInputs).map(inp => inp.value).join('');
+          if (fullCode.length === 6) {
+            // Kód je kompletní
+          }
+        }
+      }
+    });
+
+    // Zavření 2FA modalu
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('[data-close-modal]') || e.target.classList.contains('modal-backdrop')) {
+        twoFactorModal.classList.remove('open');
+        twoFactorModal.setAttribute('aria-hidden', 'true');
+        reset2FAInputs();
+        document.getElementById('disable2faPassword').value = '';
+      }
+    });
+
+    // Načti stav 2FA při načtení stránky
+    load2FAStatus();
 
     // Načíst nastavení při načtení stránky
     loadSettings();
