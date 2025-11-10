@@ -194,54 +194,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
         </div>
       </section>
 
-      <!-- Jazyk a region -->
-      <section class="settings-section">
-        <div class="section-header">
-          <i class="fa-solid fa-globe"></i>
-          <div>
-            <h2>Jazyk a region</h2>
-            <p>Nastav jazyk a regionální preference</p>
-          </div>
-        </div>
-
-        <div class="settings-grid">
-          <div class="setting-item">
-            <div class="setting-info">
-              <label for="languageSelect">Jazyk aplikace</label>
-              <span class="setting-desc">Vyber si preferovaný jazyk rozhraní</span>
-            </div>
-            <select id="languageSelect" class="setting-select">
-              <option value="cs" selected>Čeština</option>
-              <option value="en">English</option>
-              <option value="sk">Slovenčina</option>
-              <option value="de">Deutsch</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <label for="dateFormat">Formát data</label>
-              <span class="setting-desc">Jak se mají zobrazovat data</span>
-            </div>
-            <select id="dateFormat" class="setting-select">
-              <option value="dd.mm.yyyy" selected>DD.MM.RRRR</option>
-              <option value="mm/dd/yyyy">MM/DD/YYYY</option>
-              <option value="yyyy-mm-dd">YYYY-MM-DD</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <label for="timeFormat">Formát času</label>
-              <span class="setting-desc">12 nebo 24 hodinový formát</span>
-            </div>
-            <select id="timeFormat" class="setting-select">
-              <option value="24h" selected>24 hodin</option>
-              <option value="12h">12 hodin (AM/PM)</option>
-            </select>
-          </div>
-        </div>
-      </section>
+      
 
       <!-- Soukromí a bezpečnost -->
       <section class="settings-section">
