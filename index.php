@@ -86,12 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
       </div>
 
       <div class="input-group">
-        <label for="loginPassword">Heslo</label>
-        <div class="input-with-icon">
-          <input type="password" id="loginPassword" name="password" placeholder="********" required>
-          <button class="toggle-password" data-target="loginPassword"><i class="fa-solid fa-eye"></i></button>
-        </div>
-      </div>
+    <label for="loginPassword">Heslo</label>
+    <div class="input-with-icon">
+    <input type="password" id="loginPassword" name="password" placeholder="********" required>
+    <button type="button" class="toggle-password" data-target="loginPassword">
+      <i class="fa-solid fa-eye"></i>
+    </button>
+    </div>
+    </div>
 
       <button class="btn" type="submit" id="signInButton">Přihlásit se</button>
 
