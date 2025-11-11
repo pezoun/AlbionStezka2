@@ -73,6 +73,9 @@ if ($sessionId || $sessionEmail) {
         <?php if ($isAdmin): ?>
           <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
         <?php endif; ?>
+        <?php if ($isAdmin): ?>
+          <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+        <?php endif; ?>
       </nav>
     </div>
 
