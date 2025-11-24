@@ -15,22 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Vyplň prosím všechna pole.';
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        showCustomAlert('Zadejte platný email!');
-        e.preventDefault();
-        return;
+        $errors[] = 'Zadejte platný email!';
     }
     if (strlen($nickname) < 3 || strlen($nickname) > 50) {
-        showCustomAlert('Přezdívka je moc krátká nebo dlouhá!');
-        e.preventDefault();
-        return;
+        $errors[] = 'Přezdívka je moc krátká nebo dlouhá!';
     }
     if (strlen($password) < 8) {
-        showCustomAlert('Heslo je příliš slabé!');
-        e.preventDefault();
-        return;
+        $errors[] = 'Heslo je příliš slabé!';
     }
-
-   
 
     // Kontrola unikátnosti emailu a přezdívky
     if (!$errors) {
@@ -47,12 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (firstName, lastName, nickname, email, password)
-                VALUES (?, ?, ?, ?, ?)";
+        // ZMĚNA: Registrace s approved = 0
+        $sql = "INSERT INTO users (firstName, lastName, nickname, email, password, approved)
+                VALUES (?, ?, ?, ?, ?, 0)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('sssss', $firstName, $lastName, $nickname, $email, $hash);
+        
         if ($stmt->execute()) {
-            $subject = "Vítejte v Albion stezce! 🎉";
+            $subject = "Čekáme na schválení tvé registrace - Albion stezka ⏳";
             $message = "
                 <html>
                 <head>
@@ -63,41 +57,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 14px; }
                         .welcome-text { font-size: 20px; margin-bottom: 20px; color: #2B44FF; }
                         .highlight { color: #1a7c1a; font-weight: bold; }
-                        .credentials { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
-                        .button { display: inline-block; background: #2B44FF; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+                        .pending-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 5px; margin: 20px 0; }
                     </style>
                 </head>
                 <body>
                     <div class='header'>
-                        <h1>Vítejte v Albion stezce! 🎉</h1>
+                        <h1>Děkujeme za registraci! ⏳</h1>
                     </div>
                     <div class='content'>
-                        <p class='welcome-text'>Děkujeme za registraci, <span class='highlight'>$firstName</span>!</p>
+                        <p class='welcome-text'>Ahoj <span class='highlight'>$firstName</span>!</p>
                         
-                        <p>Právě jsi se úspěšně zaregistroval(a) do naší sportovní aplikace Albion stezka.</p>
+                        <p>Tvá registrace do Albion stezky byla úspěšně odeslána.</p>
                         
-                        <div class='credentials'>
-                            <p><strong>Tvoje přihlašovací údaje:</strong></p>
-                            <ul>
-                                <li><strong>Jméno:</strong> $firstName $lastName</li>
-                                <li><strong>Přezdívka:</strong> $nickname</li>
-                                <li><strong>Email:</strong> $email</li>
-                                <li><strong>Datum registrace:</strong> " . date('d.m.Y H:i') . "</li>
-                            </ul>
+                        <div class='pending-box'>
+                            <p><strong>⏳ Čeká na schválení</strong></p>
+                            <p>Tvůj účet nyní čeká na schválení administrátorem. Jakmile bude schválen, dostaneš další email a budeš se moci přihlásit.</p>
                         </div>
                         
-                        <p>Nyní máš přístup ke všem funkcím naší aplikace:</p>
+                        <p><strong>Tvoje registrační údaje:</strong></p>
                         <ul>
-                            <li>📊 Sledování tvých sportovních aktivit</li>
-                            <li>🎯 Stanovování a plnění cílů</li>
-                            <li>🏆 Získávání odznaků a úspěchů</li>
+                            <li><strong>Jméno:</strong> $firstName $lastName</li>
+                            <li><strong>Přezdívka:</strong> $nickname</li>
+                            <li><strong>Email:</strong> $email</li>
+                            <li><strong>Datum registrace:</strong> " . date('d.m.Y H:i') . "</li>
                         </ul>
-                    
                         
+                        <p>Obvykle schvalujeme nové účty do 24 hodin.</p>
                     </div>
                     <div class='footer'>
                         <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-                        <p>Email: tomaskotik08@gmail.com<br></p>
+                        <p>Email: tomaskotik08@gmail.com</p>
                         <p><small>Tento email byl odeslán automaticky, prosím neodpovídejte na něj.</small></p>
                     </div>
                 </body>
@@ -106,18 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Odeslání emailu
             require_once __DIR__ . '/emailSent.php';
-            $emailResult = smtp_mailer($email, $subject, $message);
+            smtp_mailer($email, $subject, $message);
             
-            $_SESSION['user_id']   = $stmt->insert_id;
-            $_SESSION['firstName'] = $firstName;
-            $_SESSION['lastName']  = $lastName;
-            $_SESSION['nickname']  = $nickname;
-            $_SESSION['email']     = $email;
-            
-            // Přidání informace o odeslání emailu do session
-            $_SESSION['email_sent'] = true;
-            
-            header('Location: homepage.php');
+            // Přesměrování na info stránku místo přihlášení
+            $_SESSION['pending_approval'] = true;
+            $_SESSION['pending_email'] = $email;
+            header('Location: pending_approval.php');
             exit;
         } else {
             $errors[] = 'Registrace se nezdařila. Zkus to prosím znovu.';

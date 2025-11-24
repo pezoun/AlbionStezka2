@@ -1,8 +1,11 @@
 <?php
 // homepage.php (Welcome)
 session_start();
+
+$loggedUserId = (int)($_SESSION['user_id'] ?? 0);
 require_once __DIR__ . '/connect.php';
 require_once __DIR__ . '/is_admin.php';
+require_once __DIR__ . '/is_approver.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
     header('Location: index.php');
@@ -13,6 +16,7 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSI
 $user = ['name' => 'Uživatel', 'email' => 'neznamy@example.com'];
 $sessionId    = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 $sessionEmail = $_SESSION['email'] ?? $_SESSION['user_email'] ?? null;
+$isApprover = is_approver($conn, $loggedUserId);
 
 if ($sessionId || $sessionEmail) {
   if ($sessionId) { $stmt = $conn->prepare("SELECT * FROM users WHERE Id = ? LIMIT 1"); $stmt->bind_param("i", $sessionId); }
@@ -38,9 +42,9 @@ $firstNameRaw = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
 $safeFirst = htmlspecialchars($firstNameRaw, ENT_QUOTES, 'UTF-8');
 $safeEmail = htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8');
 
-// Je přihlášený admin?
 $loggedUserId = (int)($_SESSION['user_id'] ?? 0);
 $isAdmin = $loggedUserId > 0 ? is_admin($conn, $loggedUserId) : false;
+$isApprover = $loggedUserId > 0 ? is_approver($conn, $loggedUserId) : false;
 
 // Alert po registraci
 if (!empty($_SESSION['user_id'])) {
@@ -48,6 +52,15 @@ if (!empty($_SESSION['user_id'])) {
         $showEmailAlert = true;
         $emailStatus = $_SESSION['email_debug'] ?? 'unknown';
         unset($_SESSION['email_sent'], $_SESSION['email_debug'], $_SESSION['email_debug_info']);
+    }
+}
+
+// Načtení počtu neschválených uživatelů (jen pro admin/schvalovatele)
+$pendingCount = 0;
+if ($isAdmin || $isApprover) {
+    $result = $conn->query("SELECT COUNT(*) as total FROM users WHERE approved = 0");
+    if ($result) {
+        $pendingCount = $result->fetch_assoc()['total'];
     }
 }
 
@@ -85,11 +98,18 @@ $initial = mb_strtoupper(mb_substr($safeFirst, 0, 1, 'UTF-8'), 'UTF-8');
         <a class="item" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
         <?php if ($isAdmin): ?>
-          <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
-        <?php endif; ?>
-        <?php if ($isAdmin): ?>
-          <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
-        <?php endif; ?>
+  <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
+<?php endif; ?>
+<?php if ($isAdmin || $isApprover): ?>
+  <a class="item" href="approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
+    <?php if ($pendingCount > 0): ?>
+      <span class="pill" style="background: #ef4444; color: white; border-color: #ef4444;"><?php echo $pendingCount; ?></span>
+    <?php endif; ?>
+  </a>
+<?php endif; ?>
+<?php if ($isAdmin): ?>
+  <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+<?php endif; ?>
       </nav>
     </div>
 

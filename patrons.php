@@ -1,8 +1,10 @@
 <?php
 // patrons.php
 session_start();
+$loggedUserId = (int)($_SESSION['user_id'] ?? 0);
 require_once __DIR__ . '/connect.php';
 require_once __DIR__ . '/is_admin.php';
+require_once __DIR__ . '/is_approver.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
   header('Location: index.php');
@@ -11,11 +13,24 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSI
 // Je přihlášený admin?
 $loggedUserId = (int)($_SESSION['user_id'] ?? 0);
 $isAdmin = $loggedUserId > 0 ? is_admin($conn, $loggedUserId) : false;
+$isApprover = is_approver($conn, $loggedUserId);
 
 function is_pdo($db){ return isset($db) && $db instanceof PDO; }
 function is_mysqli($db){ return isset($db) && $db instanceof mysqli; }
 
 $userId = $_SESSION['user_id'] ?? $_SESSION['Id'] ?? $_SESSION['id'] ?? null;
+
+$isApprover = $loggedUserId > 0 ? is_approver($conn, $loggedUserId) : false;
+
+
+$pendingCount = 0;
+if ($isAdmin || $isApprover) {
+    $result = $conn->query("SELECT COUNT(*) as total FROM users WHERE approved = 0");
+    if ($result) {
+        $pendingCount = $result->fetch_assoc()['total'];
+    }
+}
+
 
 // zjisti jestli je přihlášený uživatel patron
 $isPatron = false;
@@ -120,11 +135,18 @@ if (!$isPatron && !$hasPatron) {
         <a class="item" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
         <?php if ($isAdmin): ?>
-          <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
-        <?php endif; ?>
-        <?php if ($isAdmin): ?>
-          <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
-        <?php endif; ?>
+  <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
+<?php endif; ?>
+<?php if ($isAdmin || $isApprover): ?>
+  <a class="item" href="approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
+    <?php if ($pendingCount > 0): ?>
+      <span class="pill" style="background: #ef4444; color: white; border-color: #ef4444;"><?php echo $pendingCount; ?></span>
+    <?php endif; ?>
+  </a>
+<?php endif; ?>
+<?php if ($isAdmin): ?>
+  <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+<?php endif; ?>
       </nav>
     </div>
     <div class="nav-bottom">
