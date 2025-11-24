@@ -433,7 +433,7 @@ while ($row = $result->fetch_assoc()) {
         <span>Albion Stezka</span>
       </a>
       <nav class="menu">
-        <a class="item active" href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
+        <a class="item" href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
         <a class="item" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
         <?php if ($isAdmin): ?>
@@ -447,7 +447,7 @@ while ($row = $result->fetch_assoc()) {
   </a>
 <?php endif; ?>
 <?php if ($isAdmin): ?>
-  <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+  <a class="item active" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
 <?php endif; ?>
       </nav>
     </div>

@@ -96,11 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="nav-top">
       <a class="brand" href="homepage.php"><i class="fa-solid fa-layer-group"></i><span>Albion Stezka</span></a>
       <nav class="menu">
-        <a class="item active" href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
+        <a class="item " href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
         <a class="item" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
         <?php if ($isAdmin): ?>
-  <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
+  <a class="item active" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
 <?php endif; ?>
 <?php if ($isAdmin || $isApprover): ?>
   <a class="item" href="approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
