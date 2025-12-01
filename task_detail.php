@@ -55,7 +55,7 @@ $categories = [
     'skauting' => [
         'name' => 'Skauting',
         'color' => 'green',
-        'description' => 'Splním všechny úkoly v této kategorii',
+        'description' => 'Splním všechny',
         'tasks' => [
             'Znám skautské pozdravení, handshake a základní znaky',
             'Umím složit skautskou přísahu a znám skautský zákon',
@@ -66,7 +66,237 @@ $categories = [
             'Umím vysvětlit význam skautské lilie a dalších symbolů',
             'Zúčastnil jsem se skautské akce nebo výpravy',
         ]
-    ]
+    ],
+    'tabornicke-dovednosti' => [
+        'name' => 'Tábornické dovednosti',
+        'color' => 'green',
+        'description' => 'Splním všechny',
+        'tasks' => [
+            'Umím postavit a zapálit táborový oheň',
+            'Znám základní uzly a umím je použít',
+            'Umím postavit přístřešek z přírodních materiálů',
+            'Znám pravidla bezpečnosti v táboře',
+            'Umím orientovat se pomocí mapy a kompasu',
+            'Znám základy první pomoci',
+            'Umím připravit jídlo na ohni',
+            'Zvládnu přespat venku pod širým nebem',
+        ]
+    ],
+    'orientace-v-prirode' => [
+        'name' => 'Orientace v přírodě',
+        'color' => 'green',
+        'description' => 'Splním všechny',
+        'tasks' => [
+            'Umím číst turistickou mapu',
+            'Znám práci s kompasem',
+            'Umím určit světové strany bez pomůcek',
+            'Zvládnu navigaci pomocí GPS',
+            'Znám základní orientační body v terénu',
+            'Umím odhadnout vzdálenost a čas',
+            'Znám pravidla bezpečného pohybu v přírodě',
+            'Zúčastnil jsem se orientačního závodu',
+        ]
+    ],
+    'sport-kondice' => [
+        'name' => 'Sport, udržování dobré kondice',
+        'color' => 'orange',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Pravidelně provozuji nějaký sport (alespoň 2x týdně)',
+            'Umím plavat a znám základy záchrany tonoucího',
+            'Zvládnu uběhnout 5 km bez zastavení',
+            'Umím si sestavit vlastní tréninkový plán',
+            'Zúčastnil jsem se sportovní soutěže nebo závodu',
+            'Znám cviky pro protažení a správné držení těla',
+        ]
+    ],
+    'zdravy-zivotni-styl' => [
+        'name' => 'Zdravý životní styl',
+        'color' => 'orange',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Znám zásady zdravé výživy a dokážu si připravit vyvážené jídlo',
+            'Vím, jak správně pečovat o duševní zdraví',
+            'Rozumím důležitosti spánku a jeho vlivu na zdraví',
+            'Znám nebezpečí návykových látek a umím říct ne',
+            'Pravidelně dodržuji denní režim',
+            'Vím, jak zvládat stres a relaxovat',
+        ]
+    ],
+    'vedomosti-o-tele' => [
+        'name' => 'Vědomosti o těle',
+        'color' => 'orange',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Znám stavbu lidského těla a funkci hlavních orgánů',
+            'Rozumím změnám v pubertě',
+            'Vím, jak funguje imunitní systém',
+            'Znám zásady osobní hygieny',
+            'Umím poskytnout první pomoc při běžných úrazech',
+        ]
+    ],
+    'prakticky-zivot' => [
+        'name' => 'Praktický život',
+        'color' => 'blue',
+        'description' => 'Splním alespoň pět',
+        'tasks' => [
+            'Umím uvařit večeři pro celou rodinu',
+            'Zvládnu si zašít knoflík a opravit menší defekt na oblečení',
+            'Umím se postarat o domácnost (úklid, praní, žehlení)',
+            'Znám základy správy peněz a rozpočtu',
+            'Umím si naplánovat cestu hromadnou dopravou',
+            'Zvládnu základní opravu kola',
+            'Umím pracovat se základními nástroji',
+            'Dokážu si vyřídit potřebné záležitosti na úřadě',
+        ]
+    ],
+    'moje-zajmy' => [
+        'name' => 'Moje zájmy',
+        'color' => 'blue',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Věnuji se pravidelně svému koníčku',
+            'Naučil jsem se novou dovednost nebo zlepšil stávající',
+            'Zúčastnil jsem se soutěže nebo přehlídky ve svém zájmu',
+            'Sdílím svůj zájem s ostatními (učím je, vedu kroužek apod.)',
+            'Vytvořil jsem něco souvisejícího s mým koníčkem',
+        ]
+    ],
+    'poznavani-prirody' => [
+        'name' => 'Poznávání přírody',
+        'color' => 'blue',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Poznám běžné druhy stromů a rostlin v mém okolí',
+            'Umím určit stopy zvířat',
+            'Znám jedovaté a nejedovaté houby',
+            'Rozumím ekosystémům a potravním řetězcům',
+            'Pozoruji a zapisuji si přírodní jevy',
+        ]
+    ],
+    'moje-city' => [
+        'name' => 'Moje city',
+        'color' => 'purple',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Umím pojmenovat a vyjádřit své emoce',
+            'Dokážu empatie - vcítit se do pocitů druhých',
+            'Vím, jak zvládat náročné situace a neúspěchy',
+            'Umím si všímat hezkých věcí kolem sebe',
+            'Vedu si deník nebo jinak reflektuji své zážitky',
+        ]
+    ],
+    'umelecka-tvorivost' => [
+        'name' => 'Umělecká tvořivost',
+        'color' => 'purple',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Umím hrát na hudební nástroj nebo zpívat',
+            'Vytvořil jsem výtvarné dílo (obraz, sochu, kresbu...)',
+            'Zúčastnil jsem se divadelního představení',
+            'Napsal jsem příběh, báseň nebo jinou literární tvorbu',
+            'Vytvořil jsem něco rukodělného (keramika, origami, pletení...)',
+            'Naučil jsem se tancovat nebo vytvořil choreografii',
+        ]
+    ],
+    'vnimani-prirody' => [
+        'name' => 'Vnímání přírody',
+        'color' => 'purple',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Strávil jsem čas v přírodě jen pozorováním a vnímáním',
+            'Vyfotografoval jsem krásy přírody',
+            'Nakreslil jsem přírodní scenérii',
+            'Nasbíral jsem přírodní materiály a vytvořil umělecké dílo',
+            'Napsal jsem o přírodě (básničku, povídku, esej)',
+        ]
+    ],
+    'vyjadrovani' => [
+        'name' => 'Vyjadřování (schopnost komunikace)',
+        'color' => 'red',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Umím jasně vyjádřit svůj názor a argumentovat',
+            'Zvládnu prezentovat před skupinou lidí',
+            'Umím aktivně naslouchat',
+            'Napsal jsem a přednesl projev',
+            'Vedl jsem diskusi nebo debatu',
+            'Umím komunikovat různými způsoby (písemně, verbálně, neverbálně)',
+        ]
+    ],
+    'spoluprace' => [
+        'name' => 'Spolupráce (schopnost spolupracovat s druhými)',
+        'color' => 'red',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Zúčastnil jsem se týmového projektu',
+            'Pomohl jsem organizovat akci',
+            'Vyřešil jsem konflikt v týmu konstruktivně',
+            'Umím přijímat zpětnou vazbu a učit se z ní',
+            'Podporuji ostatní členy týmu',
+        ]
+    ],
+    'respekt' => [
+        'name' => 'Respekt',
+        'color' => 'red',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Chovám se slušně ke všem lidem bez rozdílu',
+            'Respektuji názory a přesvědčení druhých',
+            'Znám a dodržuji pravidla společnosti',
+            'Umím se omluvit, když udělám chybu',
+            'Ctím si práci a majetek druhých',
+        ]
+    ],
+    'sluzba-potrebnym' => [
+        'name' => 'Služba potřebným',
+        'color' => 'red',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Pomohl jsem starším nebo hendikepovaným osobám',
+            'Zúčastnil jsem se dobrovolnické akce',
+            'Podpořil jsem charitu nebo dobročinný projekt',
+            'Pomohl jsem sousedům nebo komunitě',
+            'Věnoval jsem čas potřebným',
+        ]
+    ],
+    'neziji-sam' => [
+        'name' => 'Nežiji sám',
+        'color' => 'red',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Znám historii a tradice své rodiny',
+            'Aktivně se účastním života komunity',
+            'Znám důležité osobnosti a události naší historie',
+            'Zajímám se o dění ve světě',
+            'Umím najít souvislosti mezi různými událostmi',
+        ]
+    ],
+    'ochrana-prirody' => [
+        'name' => 'Ochrana přírody, ekologie',
+        'color' => 'red',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Třídím odpad a snažím se minimalizovat odpad',
+            'Znám principy udržitelného rozvoje',
+            'Zúčastnil jsem se ekologické akce (úklid přírody, sázení stromů...)',
+            'Aktivně šetřím energií a vodou',
+            'Vím o problémech životního prostředí a jejich řešeních',
+            'Podporuji lokální a ekologické produkty',
+        ]
+    ],
+    'duchovno' => [
+        'name' => 'Duchovní život',
+        'color' => 'yellow',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Přemýšlím o smyslu života a svém místě ve světě',
+            'Mám své hodnoty a snažím se podle nich žít',
+            'Znám různá náboženství a filozofická učení',
+            'Umím být vděčný za to, co mám',
+            'Věnuji čas meditaci, modlitbě nebo jiné duchovní praxi',
+        ]
+    ],
 ];
 
 $currentCategory = $categories[$category] ?? null;
@@ -295,12 +525,7 @@ $categoryColor = $currentCategory['color'];
           // Launch confetti
           launchConfetti();
           
-          // Play success sound (optional)
-          try {
-            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUKjl8bllHAU2jdXxxm0gBS18zu/bljwIElyw6OyrWBUIQ5zd8sFuJAUuhM/z2Ik2Bxhnu+3mnEwMDlCp5fK6ZBwGNo3V8cZtHwYue8/u2pU5CBRbs+nqplUUCkWc3/O+aycFKIHO8tiJNggbaLzv5JtNDAxPqOXyu2UcBTaM1fHHbB8GK3zO79mVOwgSWrLo66tZFghDnN/zwG4mBS6Dz/PYiTYHGGe77eabTQwMUKjk8rplHAY1jdXxx20fBSt7zu7alTsIE1qy6eqmVRUJRZve88FuJgUtg8/y2Ik2BhlnvO3lm00MDFCo5PK6ZRwFNo3V8cZsIAUrfM7v2pU6CBNasunoqFYVCESb3/PAbiUFLoTP8tiIOQcZZ7vs5ZtODA1QqOTypmYcBTWN1fHGbSAFK3vO79qVOggSWrHp6qdWFQlEnN7zwW4mBS2Dz/PYiTYHGWe87OWaTgwNT6jk8rpmHAU1jdTxxmwgBSp7zu/alToIElqx6eqoVhQJRJze88FuJgUshM/y2Ik2BxlnvOzlmk0MDU+o5PK6ZhwFNI3V8cZsHwUqe87u2pU7CBFasejqqVYVCUSc3fPBbiYFK4PP8tiJNgcZZ7zs5ZpODA1PqOTyumYcBTSN1PHGbB8FKXvO7tqVOwgRWrHo6qlWFQlEnN3zwW4lBSuDz/LYiTYHGGe87OWaTgwNT6jk8rpmHAU0jdXxxmwfBSl7zu7blToIEVmx6OqpVhQJQ5zd88FuJQUqg8/y2Ik2Bxhnuuzlmk4MDU+n5PK6ZRwFM43V8sdsHwUpeszu25U6CBFZsejqqVYVCUOc3fPBbiYFKoPP8tiJNQcZZ7rs5ZpODA1Pp+TyumUcBTON1fHGbB8FKHrM7tuVOwgRWLHn6qlWFAlDnN3zwW4lBSqDz/LYiTYHGGe67OWaTQwNT6fk8rplHAUzjdXxxmsfBSh6y+7alToJEVix5+qpVhUJQ5zd88FuJQUpg8/y2Ik2BxhnuuzlmU4MDU+n5PK6ZRwFM43V8cZrHwUoesvu2pU6CRFYsefqqFYUCUSc3PPBbiUFKYPP8tiJNwcYZ7rs5ZlODA1Pp+TyumUcBTKN1PHGax4FKHnL7tqVOwkRWLHn6qhWFAlDnNzwwW4lBSmDzvHZiTYHGGe67eWZTgwNT6fk8bllHAUyjdTxxmsfBSh5y+7alToJEVew5+qoVhUJQ5zc8MFuJQUog87x2Ik2Bxdnuuzlmk0MDU+n4/G5ZRwFMo3U8cVsHgUneMvt2pU6CRBXr+fqqFYVCUKb3PDAbSYFKILO8dmJNgcXZ7ns5ppNDA1Pp+PxuWQcBTGN1PHFbB4FJ3jL7dqUOgkQV6/n6qhWFQlCm9zwwG0lBSeC0PHZiTYHF2e57OaaTQwMTqbj8blkHAUyjtLxxWsfBCd5y+zblDoJEFev5+qnVxQKQZvc8MBtJQUngdDx2Yk2Bxdnuezlmk4MDU6m4/G5ZBwFMY7S8cVrHgUneMvs2pQ6CRBXr+fqp1cUCUGb2+/AbSYFJoHQ8dmJNQcXZ7ns5ZpNDA1OpuPxuWQcBTGO0vDFax4FJnjL69qUOgkQVq7m6qdXFAlBm9vvwG0lBSaB0PHZiTYHFma56+WaTQwNTqbj8LhkHAQxjtLwxWsfBSZ4y+valDoJD1au5uqnVxQKQZvb78BtJQUmgdDw2Yk2Bxdmuezmm0wMDU6l4/C4ZBwEMY7S8MVrHgUmeMvr2pQ7CBBWr+bqp1YUCkGa2+/AbSUFJoHQ8NmJNgcXZrns5ZpNDA1OpdDwuGQcBDKO0vDFax4FJnjL69qUOggQVq7m6qdXFApAmtvvv2wlBSaB0PDZiTYGF2a57OWaTQwNTqXQ8LhkGwQyjs/vxWofBSZ3y+zak1oIEFau5uqnVhQKQJnb7r9sJAUmgc/w2Ik2Bxdmuezmm0wMDU6l0O+4ZBsEMo7P78VqHwUmd8vs2pNaCA9WreXqp1cVCUCZ2+6/bCQFJoHP8NiJNgcXZrns5ptNDA1OpdDvt2MbBDGOz+/Fah8FJ3fL7NqTWggPVq3l6qdXFAlAmdvuv2wkBSaBz/DYiTYHF2a57OabTAwNTqXQ77djGwQxjs/vxWofBSZ3y+zak1oID1at5eqnVxQKP5nb7r9sJAUlgs/w2Ik2BhZmuezlm04LDE6k0O+3YxoEMY7P78VqHwUmd8vs2pNaCA9WreXqp1cUCj+Z2+6+ayMFJYLP8NiJNgcXZrns5ZtNDA1OpNDvt2MaBDCOz+/Fah8FJnfL7NqTWggPVq3l6qdXFAo/mdvuvmsjBSWCz/DYiTYHF2a56+WaTQwNTqTQ77djGwQwjs/vxWkfBSZ3y+3ak1oID1Wt5eqnVxQKP5nb7r5rIwUlgs/w2Ig2Bxdmuezmm0wMDU6k0O+3YxsEMI7P78VpHwUmd8vt2pNaCA9VreXqp1cUCT+Z2+6+ayMFJYLP8NiINgYXZrjs5ZtNDA1OpNDvt2MaBDCOzu/FaR8FJnfL7NqTWggPVa3l6qdXFAo+mdvuvmsjBSSBz/DYiDYHF2a47OabTAwNTqTQ77diGgQvjs7vxWkfBSZ3y+3ak1oID1Wt5eqmVxQKPpnb7r5rIwUkgc/w2Ig2BxdmuOzlm04MDU6k0O+3YxoEL47O78VpHwUmeMvt2pRaCA9VreXqplcUCj6Z2+6+aiMFJIHP8NiINgYWZrjs5ZtNDA1OpNDvt2IaBDCOzu/FaR8FJnjL7tqUWggPVa3l6qZXFAo+mdvuvmojBSSBz+/YiDYGFma47OWbTgwMTqTQ77diGgQwjs7vxWkeBSZ4y+7alFoID1Wt5OqmVxQKPpnb7r5qIwUkgc/v2Ig2BhZluOzlm04MDU6j0O+3YhoEL47O78VpHwUmeMvt2pRZCA5Vrdvqp1cUCT6Y2u6+ayMFJIHP79iHNgYWZbns5ZtNDA1Oo8/us2EbBC+Oze/GaR8FJnnL7dqUWggPVazb6qdWFAk+mNnuvmsiBS2Cz+/YhzUGFmW46+WbTQwNTqPP7rNhGgQujs3vxmkfBSZ5y+zalVoID1Ws2+qnVhQJPpjZ7r5rIgUtgs/v2Ic1BhZluevlmk0MDU6jz+6zYRoELo7N78ZpHgUmecvt2pVaCA5VrNvqplYVCT6Y2e6+aiIFLILP79iHNQYWZbnr5ZpNDA1Oo8/us2EaBDCOze/GaR4FJXnL7dqVWggOVazb6qZWFQk+mNnuvmoiBSyCz+/YhzUGFmW56+WaTQwNTqPP7rNhGgQwjs3vxmkeBSV5y+3alVoIDlWs2+qmVhUJPpjZ7r5qIgUsgc/v2Ic1BhVmuevlmk4MDU6jz+6zYRoEL47N78ZpHgUlecvt2pVaCA5VrNvqplYVCT2X2O69ayIFLIHP79iHNQYVZrnr5ZpNDA1Oo8/us2EaBDCOze/FaR4FJnnL7dqVWggOVazb6qZWFAk9l9juv2siBSyCz+/YhzUGFWa56+WaTQwMTqPP7rNhGgQvjs3vxWkfBSZ5y+zalVkIDlWr2+qmVxQJPZfY7r9qIgUrgs/v2Ic1BhVmuOvlmk0MDU6jz+6zYRoEL47N78VpHgUlecvs2pVaCA5Uq9vqplcUCT2X2O6/aiIFK4LP79iHNQYVZrjr5ZpNDA1Oo8/us2EaBDCOze7GaR4FJXnL7NqVWggOVKvb6qZXFAk9l9juv2siBSuCzu/YhzUGFWa46+WaTQwNTqPP7rNhGgQwjs3uxWkeBSV5y+zalVkIDlSr2+qmVxQJPZfY7r9qIgUrgs7v2Ic1BhZlueulm00MDU6jz+6zYRoEL47N7sVpHgUlecvs2pVZCA5Uq9vqplcTCT2X2O6/aiIFK4LO79iHNQYVZbnr5ZpNDA1Oo8/us2AaBDCOze7FaR4FJXnL7NqVWQgOVKva6qZXFAk9ltfuv2oiBSuCzu/YhzUGFWW56+WaTQwNTqPP7bNhGgQwjs3uxmkeBSV5y+valVoIDVKr2uqmVxQJPZbX7r9qIgUrgs7v2Ic1BhVluevlmk0MDU6jz+2zYRoEMI7N7sVpHgUmeMvs2pVaCA1SqtrqplcUCTyW1+6/aiIFK4HO79iHNQYVZbnr5ZpNDA1Oo8/ts2EaBDCOze7FaR4FJnjL7NqUWggNUqra6qZXFAk8ltfuvmoiBSuBzu/YhzYGFWW56+WaTQwNTqPO7bRhGgQwjs3uxWkfBSZ4y+zalVkIDVKq2uqmVxQJPJbX7r9qIgUrgszu2Ic1BhVluevlmk0MDU6jzu2zYRoEL47N7sVpHgUmeMvt2pVZCA1SqtrqplcUCTyW1+6/aiIFK4LM7tiHNQYVZbnr5ZpNDA1Oo87ts2AaBDCOze7FaR4FJXjL7dqVWQgNUqra6qZWFAk8ltfuv2oiBSuBzO7YhzYGFWW56+WZTQwNTqPO7bNhGgQwjs3uxWkfBSV5y+3alFoIDVKq2uqmVxQJPJbX7r5qIgUrgs7u2Ic1BhVluevlmk0MDU6jzu2zYBoEL47N7sVpHgUlecvt2pRaCA1SqtrqplcUCTuW1u6/aiEFK4LO7tiHNQYVZbnr5ZpNDA1Oo87ts2AaBDCOze7EaR4FJXnL7dqUWggNUqra6qZXFAk7ltbuv2ohBSuBzu7YhzUGFWW56+WaTQwNTqPO7bNhGgQwjs3uxWkeBSV5y+3alVkIDFGq2uqmVhQKO5bW7r9qIQUrgc7u2Ic2BhVluevlmk0MDU6jzu2zYBoEMI7N7sVpHgUleMvt2pVZCAxRqtrqplcUCTuW1u6/aiEFK4HO7tiHNQYVZbnr5ZpNDA1Oo87ts2AaBDCOze7FaR4FJXnL7NqVWQgMUara6qZXFAk7ltbuv2ohBSyCzu7YhzUGFWS56+WaTQwNTqPO7bNhGgQwjs3vxWkeBSZ4y+zalVkIDFGq2uqlVxQJO5bW7r9qIQUrgc7u2Ic1BhVluOvlmk0MDU6jzu2zYBoEMI7N78VpHgUleMvs2pVaCA1RqtrqplcUCTuW1u6+aiEFK4HO7tiHNQYVZbjr5ZpNDA1Oo87ts2AaBDCOze/FaR4FJnjL7NqVWQgMUara6qVXFAk7ltbuv2khBSuBzu7YhzUGFWW46+WaTQwNTqPO7bNhGgQwjs3vxWkeBSZ4y+zalVkIDFGq2uqlVxQJOpXW7r9qIQUrgc7u2Ic1BhVluOvlmk0MDU6jzu2zYRoEMI7N78VpHgUleMvs2pVaCA1Rqtrqp1cUCTqV1u6/aA==');
-            audio.volume = 0.3;
-            audio.play();
-          } catch (e) {}
+          
         }
       }
     }
