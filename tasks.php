@@ -71,6 +71,9 @@ if ($isAdmin || $isApprover) {
   <!-- Ikony + styly -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer"/>
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="layout light">
 
@@ -127,9 +130,19 @@ if ($isAdmin || $isApprover) {
         <h1>Můj začátek</h1>
       </section>
       <section class="cards three">
-        <article class="card category green">
+        <article 
+          class="card category green clickable" 
+          x-data="{ hover: false }"
+          @mouseenter="hover = true"
+          @mouseleave="hover = false"
+          @click="window.location.href='task_detail.php?category=skauting'"
+          :style="hover ? 'transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);' : ''"
+        >
           <h3>Skauting</h3>
           <p class="muted">Splním všechny</p>
+          <div class="card-action" :style="hover ? 'background: rgba(255, 255, 255, 0.3); transform: translateX(4px);' : ''">
+            <i class="fas fa-arrow-right"></i>
+          </div>
         </article>
         <article class="card category green">
           <h3>Tábornické dovednosti</h3>
