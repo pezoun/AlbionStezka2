@@ -316,6 +316,10 @@ $categoryColor = $currentCategory['color'];
       const confettiCount = 300;
       const colors = ['#2b44ff', '#22c55e', '#fbbf24', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'];
       
+      let startTime = Date.now();
+      const duration = 5000; // 5 seconds total
+      const fadeStart = 3500; // Start fading after 3.5 seconds
+      
       // Create confetti particles
       for (let i = 0; i < confettiCount; i++) {
         confetti.push({
@@ -327,16 +331,27 @@ $categoryColor = $currentCategory['color'];
           tilt: Math.floor(Math.random() * 20) - 10,
           tiltAngleIncremental: Math.random() * 0.1 + 0.08,
           tiltAngle: 0,
-          rotation: Math.random() * 360
+          rotation: Math.random() * 360,
+          opacity: 1
         });
       }
       
       let animationFrame;
       function draw() {
+        const elapsed = Date.now() - startTime;
+        
+        // Calculate global opacity for fade out
+        let globalOpacity = 1;
+        if (elapsed > fadeStart) {
+          globalOpacity = 1 - (elapsed - fadeStart) / (duration - fadeStart);
+          globalOpacity = Math.max(0, globalOpacity);
+        }
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         confetti.forEach((particle, index) => {
           ctx.save();
+          ctx.globalAlpha = globalOpacity;
           ctx.translate(particle.x + particle.tilt, particle.y);
           ctx.rotate((particle.rotation * Math.PI) / 180);
           
@@ -355,13 +370,9 @@ $categoryColor = $currentCategory['color'];
           particle.y += (Math.cos(particle.d) + 5 + particle.r / 2) / 1.5;
           particle.x += Math.sin(particle.d) * 2;
           particle.tilt = Math.sin(particle.tiltAngle - index / 3) * 20;
-          
-          if (particle.y > canvas.height) {
-            confetti.splice(index, 1);
-          }
         });
         
-        if (confetti.length > 0) {
+        if (elapsed < duration) {
           animationFrame = requestAnimationFrame(draw);
         } else {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -369,14 +380,6 @@ $categoryColor = $currentCategory['color'];
       }
       
       draw();
-      
-      // Clear after 5 seconds
-      setTimeout(() => {
-        if (animationFrame) {
-          cancelAnimationFrame(animationFrame);
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      }, 5000);
     }
   </script>
   <script src="script.js"></script>
