@@ -76,78 +76,66 @@ $patronFirstName = $patronUser['firstName'];
 
 if ($action === 'accept') {
     $subject = "Skvělá zpráva! Tvůj patron tě přijal 🎉";
-    
-    $message = "
-        <html>
-        <head>
-            <style>
-                body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-                .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .content { padding: 30px; background: #ffffff; }
-                .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 12px; }
-                .highlight { color: #1a7c1a; font-weight: bold; }
-                .success-box { background: #d4edda; border-left: 4px solid #1a7c1a; padding: 20px; border-radius: 5px; margin: 20px 0; }
-            </style>
-        </head>
-        <body>
-            <div class='header'>
-                <h1>Skvělá zpráva! 🎉</h1>
-            </div>
-            <div class='content'>
-                <p>Ahoj <span class='highlight'>$requesterFirstName</span>,</p>
-                
-                <div class='success-box'>
-                    <p><strong>Tvůj patron <span class='highlight'>$patronFirstName</span> tě přijal!</strong></p>
-                    <p>Nyní můžeš pracovat s tvým patronem a plnit společné cíle.</p>
+    $message = <<<HTML
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style>
+            body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+            .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+            .content { padding: 20px; color: #111827; line-height: 1.5; }
+            .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+            .card { background: #f8fafc; padding: 14px; border-radius: 6px; margin: 16px 0; border-left: 4px solid #0b66ff; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">Albion stezka</div>
+            <div class="content">
+                <p>Ahoj {$requesterFirstName},</p>
+                <div class="card">
+                    <p><strong>Skvělá zpráva!</strong></p>
+                    <p>Tvůj patron <strong>{$patronFirstName}</strong> tě přijal. Gratulujeme a přejeme hodně zdaru ve spolupráci.</p>
                 </div>
-                
-                <p>Těšíme se na vaši spolupráci v Albion stezce!</p>
+                <p>Pokud máš dotazy, napiš nám prosím na tomaskotik08@gmail.com.</p>
             </div>
-            <div class='footer'>
-                <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-                <p>Email: tomaskotik08@gmail.com</p>
-                <p><small>Tento email byl odeslán automaticky.</small></p>
-            </div>
-        </body>
-        </html>
-    ";
+            <div class="footer">© Albion stezka</div>
+        </div>
+    </body>
+    </html>
+    HTML;
 } else {
     $subject = "Informace k tvé žádosti o patrona 📧";
-    
-    $message = "
-        <html>
-        <head>
-            <style>
-                body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-                .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .content { padding: 30px; background: #ffffff; }
-                .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 12px; }
-                .highlight { color: #dc3545; font-weight: bold; }
-                .reject-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; border-radius: 5px; margin: 20px 0; }
-            </style>
-        </head>
-        <body>
-            <div class='header'>
-                <h1>Informace k tvé žádosti 📧</h1>
-            </div>
-            <div class='content'>
-                <p>Ahoj <span class='highlight'>$requesterFirstName</span>,</p>
-                
-                <div class='reject-box'>
-                    <p><strong>Tvůj patron <span class='highlight'>$patronFirstName</span> tvou žádost bohužel odmítl.</strong></p>
-                    <p>Nemusíš se tím trápit - pokud máš zájem, můžeš zkusit požádat jiného patrona!</p>
+    $message = <<<HTML
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style>
+            body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+            .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+            .content { padding: 20px; color: #111827; line-height: 1.5; }
+            .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+            .card { background: #fff6f6; padding: 14px; border-radius: 6px; margin: 16px 0; border-left: 4px solid #e11d48; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">Albion stezka</div>
+            <div class="content">
+                <p>Ahoj {$requesterFirstName},</p>
+                <div class="card">
+                    <p><strong>Omlouváme se, tvou žádost jsme nemohli schválit.</strong></p>
+                    <p>Patron <strong>{$patronFirstName}</strong> vaši žádost odmítl. Zkusit můžeš oslovit jiného patrona.</p>
                 </div>
-                
-                <p>V Albion stezce najdeš další patrony, kterí by mohli být pro tebe vhodní.</p>
+                <p>Pokud potřebuješ pomoc, kontaktuj nás na tomaskotik08@gmail.com.</p>
             </div>
-            <div class='footer'>
-                <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-                <p>Email: tomaskotik08@gmail.com</p>
-                <p><small>Tento email byl odeslán automaticky.</small></p>
-            </div>
-        </body>
-        </html>
-    ";
+            <div class="footer">© Albion stezka</div>
+        </div>
+    </body>
+    </html>
+    HTML;
 }
 
 // 6) Odešleme email žádajícímu uživateli

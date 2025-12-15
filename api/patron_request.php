@@ -88,59 +88,42 @@ $acceptLink = $baseUrl . '/patron_respond.php?token=' . $verifyToken . '&action=
 $rejectLink = $baseUrl . '/patron_respond.php?token=' . $verifyToken . '&action=reject';
 
 $subject = "Nová žádost o přiřazení - Albion stezka 📬";
-
-$message = "
+$requestedAt = date('d.m.Y H:i');
+$message = <<<HTML
     <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <style>
-            body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-            .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { padding: 30px; background: #ffffff; }
-            .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 12px; }
-            .highlight { color: #2B44FF; font-weight: bold; }
-            .request-card { background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2B44FF; }
-            .button { display: inline-block; padding: 12px 25px; text-decoration: none; border-radius: 5px; margin: 10px 5px; font-weight: bold; }
-            .btn-accept { background: #1a7c1a; color: white; }
-            .btn-reject { background: #dc3545; color: white; }
-            .button-group { text-align: center; margin: 30px 0; }
-            .button-group a { color : white; text-decoration: none;}
+            body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+            .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+            .content { padding: 20px; color: #111827; line-height: 1.5; }
+            .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+            .card { background: #f8fafc; padding: 14px; border-radius: 6px; margin: 16px 0; border-left: 4px solid #0b66ff; }
+            .btn { display: inline-block; padding: 10px 18px; border-radius: 6px; text-decoration: none; color: #fff; font-weight: 600; margin: 6px; }
+            .btn-accept { background: #0b66ff; }
+            .btn-reject { background: #6b7280; }
         </style>
     </head>
     <body>
-        <div class='header'>
-            <h1>Nová žádost o přiřazení! 📬</h1>
-        </div>
-        <div class='content'>
-            <p>Ahoj <span class='highlight'>$patronFirstName</span>,</p>
-            
-            <p>Právě se na tebe obrátil(a) uživatel se žádostí, aby se stal/a tvým svěřencem.</p>
-            
-            <div class='request-card'>
-                <p><strong>Žádostí od:</strong></p>
-                <ul>
-                    <li><strong>Přezdívka:</strong> $requesterNickname</li>
-                    <li><strong>Email:</strong> $requesterEmail</li>
-                    <li><strong>Čas žádosti:</strong> " . date('d.m.Y H:i') . "</li>
-                </ul>
+        <div class="container">
+            <div class="header">Albion stezka — Nová žádost</div>
+            <div class="content">
+                <p>Ahoj {$patronFirstName},</p>
+                <p>Uživatel s přezdívkou <strong>{$requesterNickname}</strong> ti poslal žádost o přiřazení svěřence.</p>
+                <div class="card">
+                    <p><strong>Detaily žádosti</strong></p>
+                    <p>Email: {$requesterEmail}<br>Čas žádosti: {$requestedAt}</p>
+                </div>
+                <p style="text-align:center;">Klikni prosím na jednu z možností níže:</p>
+                <p style="text-align:center;"><a href="{$acceptLink}" class="btn btn-accept">Přijmout</a><a href="{$rejectLink}" class="btn btn-reject">Odmítnout</a></p>
+                <p class="muted" style="color:#6b7280; font-size:12px;">Kliknutí provede automatickou odpověď žadateli.</p>
             </div>
-            
-            <p><strong>Chceš tuto žádost přijmout?</strong></p>
-            
-            <div class='button-group'>
-                <a href='$acceptLink' class='button btn-accept'>✓ Přijmout</a>
-                <a href='$rejectLink' class='button btn-reject'>✕ Odmítnout</a>
-            </div>
-            
-            <p style='color: #999; font-size: 12px;'><em>Kliknutí na tlačítko pošle automatický email žádajícímu uživateli.</em></p>
-        </div>
-        <div class='footer'>
-            <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-            <p>Email: tomaskotik08@gmail.com</p>
-            <p><small>Tento email byl odeslán automaticky, prosím neodpovídej na něj.</small></p>
+            <div class="footer">© Albion stezka</div>
         </div>
     </body>
     </html>
-";
+    HTML;
 
 // 7) Odešleme email patronovi
 $emailResult = smtp_mailer($patronEmail, $subject, $message);

@@ -65,55 +65,35 @@ if ($action === 'approve') {
         
         // Odeslání schvalovacího emailu
         $subject = "Tvůj účet byl schválen! 🎉 - Albion stezka";
-        
-        $message = "
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-                    .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                    .content { padding: 30px; background: #ffffff; }
-                    .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 14px; }
-                    .highlight { color: #1a7c1a; font-weight: bold; }
-                    .success-box { background: #d4edda; border-left: 4px solid #1a7c1a; padding: 20px; border-radius: 5px; margin: 20px 0; }
-                    .button { display: inline-block; background: #2B44FF; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; font-size: 16px; }
-                </style>
-            </head>
-            <body>
-                <div class='header'>
-                    <h1>Skvělá zpráva! 🎉</h1>
+        $loginUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/AlbionStezka2/index.php';
+        $message = <<<HTML
+        <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <style>
+                body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+                .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+                .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+                .content { padding: 20px; color: #111827; line-height: 1.5; }
+                .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+                .button { display: inline-block; background: #0b66ff; color: #fff; padding: 10px 16px; border-radius: 6px; text-decoration: none; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">Albion stezka</div>
+                <div class="content">
+                    <p>Ahoj {$userFirstName},</p>
+                    <p>Tvůj účet byl schválen a můžeš se nyní přihlásit.</p>
+                    <p><strong>Přihlašovací email:</strong> {$userEmail}<br><strong>Přezdívka:</strong> @{$userNickname}</p>
+                    <p style="text-align:center;"><a href="{$loginUrl}" class="button">Přihlásit se</a></p>
                 </div>
-                <div class='content'>
-                    <p>Ahoj <span class='highlight'>$userFirstName</span>,</p>
-                    
-                    <div class='success-box'>
-                        <p><strong>✅ Tvůj účet byl schválen!</strong></p>
-                        <p>Nyní se můžeš přihlásit do Albion stezky a začít používat všechny funkce.</p>
-                    </div>
-                    
-                    <p><strong>Tvoje přihlašovací údaje:</strong></p>
-                    <ul>
-                        <li><strong>Email:</strong> $userEmail</li>
-                        <li><strong>Přezdívka:</strong> @$userNickname</li>
-                    </ul>
-                    
-                    <div style='text-align: center;'>
-                        <a href='https://" . $_SERVER['HTTP_HOST'] . "/AlbionStezka2/index.php' class='button'>
-                            🔑 Přihlásit se nyní
-                        </a>
-                    </div>
-                    
-                    <p>Těšíme se na tebe v Albion stezce!</p>
-                </div>
-                <div class='footer'>
-                    <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-                    <p>Email: tomaskotik08@gmail.com</p>
-                    <p><small>Tento email byl odeslán automaticky.</small></p>
-                </div>
-            </body>
-            </html>
-        ";
-        
+                <div class="footer">© Albion stezka</div>
+            </div>
+        </body>
+        </html>
+        HTML;
+
         smtp_mailer($userEmail, $subject, $message);
         
         echo json_encode([
@@ -134,43 +114,32 @@ if ($action === 'approve') {
         
         // Odeslání zamítacího emailu
         $subject = "Informace o tvé registraci - Albion stezka";
-        
-        $message = "
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-                    .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                    .content { padding: 30px; background: #ffffff; }
-                    .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 14px; }
-                    .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 5px; margin: 20px 0; }
-                </style>
-            </head>
-            <body>
-                <div class='header'>
-                    <h1>Informace o registraci</h1>
+        $message = <<<HTML
+        <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <style>
+                body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+                .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+                .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+                .content { padding: 20px; color: #111827; line-height: 1.5; }
+                .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">Albion stezka</div>
+                <div class="content">
+                    <p>Ahoj {$userFirstName},</p>
+                    <p>Omlouváme se, ale tvoje registrace nebyla schválena. Pokud si myslíš, že jde o omyl, kontaktuj prosím administraci.</p>
+                    <p>Kontakt: tomaskotik08@gmail.com</p>
                 </div>
-                <div class='content'>
-                    <p>Ahoj <strong>$userFirstName</strong>,</p>
-                    
-                    <div class='warning-box'>
-                        <p><strong>⚠️ Tvá registrace nebyla schválena</strong></p>
-                        <p>Bohužel jsme nemohli schválit tvou žádost o registraci do Albion stezky.</p>
-                    </div>
-                    
-                    <p>Pokud si myslíš, že se jedná o chybu, nebo máš jakékoliv dotazy, neváhej nás kontaktovat.</p>
-                    
-                    <p><strong>Kontakt:</strong><br>
-                    Email: tomaskotik08@gmail.com</p>
-                </div>
-                <div class='footer'>
-                    <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-                    <p><small>Tento email byl odeslán automaticky.</small></p>
-                </div>
-            </body>
-            </html>
-        ";
-        
+                <div class="footer">© Albion stezka</div>
+            </div>
+        </body>
+        </html>
+        HTML;
+
         smtp_mailer($userEmail, $subject, $message);
         
         echo json_encode([

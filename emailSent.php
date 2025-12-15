@@ -18,13 +18,12 @@ function smtp_mailer($to, $subject, $msg) {
         $mail->IsHTML(true);
         $mail->CharSet = 'UTF-8';
         
-
         $mail->SMTPDebug = 0;
         
-        $mail->Username = "tomaskotik08@gmail.com";
-        $mail->Password = "cjtlprfmnakatmph"; 
+        $mail->Username = "albionstezka@gmail.com";
+        $mail->Password = "lhejiklivdhnlrvn"; 
         
-        $mail->SetFrom("tomaskotik08@gmail.com", "Albion stezka");
+        $mail->SetFrom("albionstezka@gmail.com", "Albion stezka");
         $mail->Subject = $subject;
         $mail->Body = $msg;
         $mail->AddAddress($to);

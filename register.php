@@ -46,52 +46,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param('sssss', $firstName, $lastName, $nickname, $email, $hash);
         
         if ($stmt->execute()) {
-            $subject = "Čekáme na schválení tvé registrace - Albion stezka ⏳";
-            $message = "
+                $subject = "Čekáme na schválení tvé registrace - Albion stezka ⏳";
+                $message = <<<HTML
                 <html>
                 <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
                     <style>
-                        body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-                        .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                        .content { padding: 30px; background: #ffffff; }
-                        .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 14px; }
-                        .welcome-text { font-size: 20px; margin-bottom: 20px; color: #2B44FF; }
-                        .highlight { color: #1a7c1a; font-weight: bold; }
-                        .pending-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 5px; margin: 20px 0; }
+                        body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+                        .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+                        .content { padding: 20px; color: #111827; line-height: 1.5; }
+                        .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+                        .button { display: inline-block; background: #0b66ff; color: #fff; padding: 10px 16px; border-radius: 6px; text-decoration: none; }
                     </style>
                 </head>
                 <body>
-                    <div class='header'>
-                        <h1>Děkujeme za registraci! ⏳</h1>
-                    </div>
-                    <div class='content'>
-                        <p class='welcome-text'>Ahoj <span class='highlight'>$firstName</span>!</p>
-                        
-                        <p>Tvá registrace do Albion stezky byla úspěšně odeslána.</p>
-                        
-                        <div class='pending-box'>
-                            <p><strong>⏳ Čeká na schválení</strong></p>
-                            <p>Tvůj účet nyní čeká na schválení administrátorem. Jakmile bude schválen, dostaneš další email a budeš se moci přihlásit.</p>
+                    <div class="container">
+                        <div class="header">Albion stezka</div>
+                        <div class="content">
+                            <p>Ahoj {$firstName},</p>
+                            <p>Děkujeme za registraci. Tvůj účet je nyní v čekací frontě a bude posouzen administrátorem. Jakmile bude schválen, obdržíš další e-mail s informací o možnosti přihlášení.</p>
+                            <p>Pokud máš dotazy, odpověz prosím na tento e-mail.</p>
                         </div>
-                        
-                        <p><strong>Tvoje registrační údaje:</strong></p>
-                        <ul>
-                            <li><strong>Jméno:</strong> $firstName $lastName</li>
-                            <li><strong>Přezdívka:</strong> $nickname</li>
-                            <li><strong>Email:</strong> $email</li>
-                            <li><strong>Datum registrace:</strong> " . date('d.m.Y H:i') . "</li>
-                        </ul>
-                        
-                        <p>Obvykle schvalujeme nové účty do 24 hodin.</p>
-                    </div>
-                    <div class='footer'>
-                        <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-                        <p>Email: tomaskotik08@gmail.com</p>
-                        <p><small>Tento email byl odeslán automaticky, prosím neodpovídejte na něj.</small></p>
+                        <div class="footer">© Albion stezka</div>
                     </div>
                 </body>
                 </html>
-            ";
+                HTML;
             
             // Odeslání emailu
             require_once __DIR__ . '/emailSent.php';

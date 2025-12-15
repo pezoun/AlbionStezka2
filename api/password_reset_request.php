@@ -61,60 +61,36 @@ $resetLink = $baseUrl . '/password_reset.php?token=' . $resetToken;
 
 $subject = "Žádost o změnu hesla - Albion stezka 🔐";
 
-$message = "
+$requestedAt = date('d.m.Y H:i');
+$message = <<<HTML
     <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <style>
-            body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-            .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { padding: 30px; background: #ffffff; }
-            .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 12px; }
-            .highlight { color: #2B44FF; font-weight: bold; }
-            .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 5px; margin: 20px 0; }
-            .button { display: inline-block; background: #2B44FF; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; font-size: 16px; }
-            .info-text { color: #6b7280; font-size: 14px; margin-top: 20px; }
+            body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+            .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+            .content { padding: 20px; color: #111827; line-height: 1.5; }
+            .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+            .button { display: inline-block; background: #0b66ff; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: 600; }
+            .muted { color: #6b7280; font-size: 13px; }
         </style>
     </head>
     <body>
-        <div class='header'>
-            <h1>Žádost o změnu hesla 🔐</h1>
-        </div>
-        <div class='content'>
-            <p>Ahoj <span class='highlight'>$userFirstName</span>,</p>
-            
-            <p>Obdrželi jsme žádost o změnu hesla pro tvůj účet v Albion stezce.</p>
-            
-            <div class='warning-box'>
-                <p><strong>⚠️ Pokud jsi o změnu hesla nežádal(a), tento email ignoruj.</strong></p>
-                <p>Tvé heslo zůstane beze změny a tento odkaz vyprší za 24 hodin.</p>
+        <div class="container">
+            <div class="header">Albion stezka — Reset hesla</div>
+            <div class="content">
+                <p>Ahoj {$userFirstName},</p>
+                <p>Obdrželi jsme žádost o změnu hesla pro tvůj účet. Pokud jsi o to požádal(a), klikni na tlačítko níže.</p>
+                <p style="text-align:center;"><a href="{$resetLink}" class="button">Změnit heslo</a></p>
+                <p class="muted">Odkaz je platný 24 hodin. Pokud tlačítko nefunguje, vlož tento odkaz do prohlížeče:<br><a href="{$resetLink}" style="color:#0b66ff; word-break: break-all;">{$resetLink}</a></p>
+                <p class="muted">Email: {$userEmail}<br>Čas požadavku: {$requestedAt}</p>
             </div>
-            
-            <p>Pro pokračování ke změně hesla klikni na tlačítko níže:</p>
-            
-            <div style='text-align: center;'>
-                <a href='$resetLink' class='button'>🔑 Změnit heslo</a>
-            </div>
-            
-            <p class='info-text'>
-                <strong>Tento odkaz je platný 24 hodin.</strong><br>
-                Pokud tlačítko nefunguje, zkopíruj následující odkaz do prohlížeče:<br>
-                <a href='$resetLink' style='color: #2B44FF; word-break: break-all;'>$resetLink</a>
-            </p>
-            
-            <p class='info-text'>
-                <strong>Informace o tvém účtu:</strong><br>
-                Email: $userEmail<br>
-                Čas požadavku: " . date('d.m.Y H:i') . "
-            </p>
-        </div>
-        <div class='footer'>
-            <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-            <p>Email: tomaskotik08@gmail.com</p>
-            <p><small>Tento email byl odeslán automaticky, prosím neodpovídej na něj.</small></p>
+            <div class="footer">© Albion stezka</div>
         </div>
     </body>
     </html>
-";
+    HTML;
 
 // 6) Odešleme email
 $emailResult = smtp_mailer($userEmail, $subject, $message);

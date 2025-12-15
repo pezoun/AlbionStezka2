@@ -90,53 +90,33 @@ $userEmail = $user['email'];
 $userFirstName = $user['firstName'];
 
 $subject = "Heslo bylo úspěšně změněno - Albion stezka ✅";
-
-$message = "
+$changedAt = date('d.m.Y H:i');
+$message = <<<HTML
     <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <style>
-            body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-            .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { padding: 30px; background: #ffffff; }
-            .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 12px; }
-            .highlight { color: #1a7c1a; font-weight: bold; }
-            .success-box { background: #d4edda; border-left: 4px solid #1a7c1a; padding: 20px; border-radius: 5px; margin: 20px 0; }
-            .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 14px; }
+            body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+            .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+            .content { padding: 20px; color: #111827; line-height: 1.5; }
+            .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
         </style>
     </head>
     <body>
-        <div class='header'>
-            <h1>Heslo bylo změněno ✅</h1>
-        </div>
-        <div class='content'>
-            <p>Ahoj <span class='highlight'>$userFirstName</span>,</p>
-            
-            <div class='success-box'>
-                <p><strong>✅ Tvé heslo bylo úspěšně změněno!</strong></p>
-                <p>Nyní se můžeš přihlásit s novým heslem do Albion stezky.</p>
+        <div class="container">
+            <div class="header">Albion stezka — Heslo změněno</div>
+            <div class="content">
+                <p>Ahoj {$userFirstName},</p>
+                <p>Tvé heslo bylo úspěšně změněno. Pokud jsi to nebyl(a) ty, kontaktuj nás prosím okamžitě na tomaskotik08@gmail.com.</p>
+                <p><strong>Informace o účtu:</strong><br>Email: {$userEmail}<br>Čas změny: {$changedAt}</p>
+                <p>Doporučujeme používat silné, jedinečné heslo pro každý účet.</p>
             </div>
-            
-            <div class='warning-box'>
-                <p><strong>⚠️ Pokud jsi tuto změnu neprovedl(a) ty:</strong></p>
-                <p>Kontaktuj nás okamžitě na emailu <strong>tomaskotik08@gmail.com</strong></p>
-            </div>
-            
-            <p><strong>Informace o změně:</strong></p>
-            <ul>
-                <li>Email: $userEmail</li>
-                <li>Čas změny: " . date('d.m.Y H:i') . "</li>
-            </ul>
-            
-            <p>Doporučujeme ti používat silné a jedinečné heslo pro každý účet.</p>
-        </div>
-        <div class='footer'>
-            <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-            <p>Email: tomaskotik08@gmail.com</p>
-            <p><small>Tento email byl odeslán automaticky.</small></p>
+            <div class="footer">© Albion stezka</div>
         </div>
     </body>
     </html>
-";
+    HTML;
 
 // Odešleme potvrzovací email
 smtp_mailer($userEmail, $subject, $message);

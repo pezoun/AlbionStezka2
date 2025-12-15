@@ -56,71 +56,37 @@ if ($action === 'enable') {
     $userFirstName = $user['firstName'];
     
     $subject = "Váš ověřovací kód pro 2FA - Albion stezka 🔐";
-    
-    $message = "
-        <html>
-        <head>
-            <style>
-                body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-                .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .content { padding: 30px; background: #ffffff; }
-                .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 14px; }
-                .code-box { 
-                    background: #f8f9fa; 
-                    border: 2px solid #2B44FF; 
-                    border-radius: 10px; 
-                    padding: 30px; 
-                    text-align: center; 
-                    margin: 20px 0;
-                }
-                .code { 
-                    font-size: 48px; 
-                    font-weight: bold; 
-                    color: #2B44FF; 
-                    letter-spacing: 8px;
-                    font-family: monospace;
-                }
-                .warning { 
-                    background: #fff3cd; 
-                    border-left: 4px solid #ffc107; 
-                    padding: 15px; 
-                    margin: 20px 0;
-                }
-            </style>
-        </head>
-        <body>
-            <div class='header'>
-                <h1>🔐 Ověřovací kód pro 2FA</h1>
+    $now = date('d.m.Y H:i:s');
+    $message = <<<HTML
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style>
+            body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+            .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+            .content { padding: 20px; color: #111827; line-height: 1.5; }
+            .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+            .code-box { background: #f8f9ff; border: 2px solid #0b66ff; border-radius: 8px; padding: 18px; text-align: center; margin: 20px 0; }
+            .code { font-size: 42px; font-weight: 700; color: #0b66ff; letter-spacing: 6px; font-family: monospace; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">Albion stezka — Aktivace 2FA</div>
+            <div class="content">
+                <p>Ahoj {$userFirstName},</p>
+                <p>Pro dokončení aktivace dvoufázového ověření zadej níže uvedený kód. Kód je platný 10 minut.</p>
+                <div class="code-box"><div class="code">{$code}</div></div>
+                <p>Čas vystavení: {$now}</p>
+                <p>Pokud jsi o tento požadavek nežádal(a), ignoruj tento email nebo kontaktuj podporu.</p>
             </div>
-            <div class='content'>
-                <p>Ahoj <strong>$userFirstName</strong>,</p>
-                
-                <p>Žádáš o zapnutí dvoufázového ověření pro svůj účet. Zde je tvůj ověřovací kód:</p>
-                
-                <div class='code-box'>
-                    <div class='code'>$code</div>
-                </div>
-                
-                <div class='warning'>
-                    <p><strong>⚠️ Důležité:</strong></p>
-                    <ul>
-                        <li>Tento kód je platný <strong>10 minut</strong></li>
-                        <li>Nikdy ho nesdílej s nikým</li>
-                        <li>Pokud jsi o tento kód nežádal(a), ignoruj tento email</li>
-                    </ul>
-                </div>
-                
-                <p>Po zadání kódu bude dvoufázové ověření aktivováno pro tvůj účet.</p>
-            </div>
-            <div class='footer'>
-                <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-                <p>Email: tomaskotik08@gmail.com</p>
-                <p><small>Tento email byl odeslán automaticky.</small></p>
-            </div>
-        </body>
-        </html>
-    ";
-    
+            <div class="footer">© Albion stezka</div>
+        </div>
+    </body>
+    </html>
+    HTML;
+
     $emailResult = smtp_mailer($userEmail, $subject, $message);
     
     if ($emailResult) {

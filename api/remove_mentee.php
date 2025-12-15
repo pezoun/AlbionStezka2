@@ -72,44 +72,36 @@ if (!$patronResult) {
 $patronFirstName = $patronResult['firstName'];
 $patronNickname = $patronResult['nickname'];
 
-$subject = "Vaše přiřazení bylo ukončeno - Albion stezka 📧";
-
-$message = "
+$subject = "Vaše přiřazení bylo ukončeno - Albion stezka";
+$message = <<<HTML
     <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <style>
-            body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-            .header { background: linear-gradient(135deg, #2B44FF, #1a7c1a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { padding: 30px; background: #ffffff; }
-            .footer { padding: 20px; text-align: center; background: #f8f9fa; border-radius: 0 0 10px 10px; color: #666; font-size: 12px; }
-            .highlight { color: #dc3545; font-weight: bold; }
-            .info-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; border-radius: 5px; margin: 20px 0; }
+            body { font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(11,102,255,0.08); }
+            .header { background: #0b66ff; color: #ffffff; padding: 16px 20px; text-align: center; font-weight: 600; font-size: 18px; }
+            .content { padding: 20px; color: #111827; line-height: 1.5; }
+            .footer { padding: 14px 20px; text-align: center; color: #6b7280; font-size: 13px; background: #f8fafc; }
+            .note { background: #fff6f6; padding: 14px; border-radius: 6px; margin: 12px 0; border-left: 4px solid #e11d48; }
         </style>
     </head>
     <body>
-        <div class='header'>
-            <h1>Změna stavu přiřazení 📧</h1>
-        </div>
-        <div class='content'>
-            <p>Ahoj <span class='highlight'>$menteeName</span>,</p>
-            
-            <div class='info-box'>
-                <p><strong>Tvůj patron <span class='highlight'>$patronFirstName</span> ($patronNickname) tě odebral z programu.</strong></p>
-                <p>Vaše spolupráce v Albion stezce byla ukončena.</p>
+        <div class="container">
+            <div class="header">Albion stezka</div>
+            <div class="content">
+                <p>Ahoj {$menteeName},</p>
+                <div class="note">
+                    <p><strong>Informace:</strong> Tvůj patron <strong>{$patronFirstName} ({$patronNickname})</strong> ukončil vaše přiřazení.</p>
+                </div>
+                <p>Pokud máš zájem, můžeš vyhledat nového patrona v seznamu dostupných patronů.</p>
+                <p>Děkujeme za tvou účast a přejeme hodně štěstí.</p>
             </div>
-            
-            <p>Pokud máš zájem, můžeš si vybrat nového patrona ze seznamu dostupných patronů.</p>
-            
-            <p>Děkujeme za tvou účast!</p>
-        </div>
-        <div class='footer'>
-            <p><strong>S pozdravem,<br>Tým Albion stezky</strong></p>
-            <p>Email: tomaskotik08@gmail.com</p>
-            <p><small>Tento email byl odeslán automaticky.</small></p>
+            <div class="footer">© Albion stezka</div>
         </div>
     </body>
     </html>
-";
+    HTML;
 
 // 6) Pošli email
 $emailResult = smtp_mailer($menteeEmail, $subject, $message);

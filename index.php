@@ -8,41 +8,6 @@ if (!empty($_SESSION['user_id'])) {
 }
 
 $loginError = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'login') {
-    $identifier = trim($_POST['identifier'] ?? '');
-    $password   = $_POST['password'] ?? '';
-
-    if ($identifier === '' || $password === '') {
-        $loginError = 'Vyplň přihlašovací údaje.';
-    } else {
-        $sql = "SELECT Id, firstName, lastName, nickname, email, password, approved 
-                FROM users 
-                WHERE email = ? OR nickname = ?
-                LIMIT 1";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ss', $identifier, $identifier);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-
-        if ($user && password_verify($password, $user['password'])) {
-            // KONTROLA: Je účet schválený?
-            if ($user['approved'] == 0) {
-                $loginError = 'Tvůj účet ještě nebyl schválen administrátorem. Zkus to později.';
-            } else {
-                $_SESSION['user_id'] = (int)$user['Id'];
-                $_SESSION['firstName'] = $user['firstName'];
-                $_SESSION['lastName']  = $user['lastName'];
-                $_SESSION['nickname']  = $user['nickname'];
-                $_SESSION['email']     = $user['email'];
-                header('Location: homepage.php');
-                exit;
-            }
-        } else {
-            $loginError = 'Neplatný email/přezdívka nebo heslo.';
-        }
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -53,6 +18,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Inline styles pro 2FA kód inputy */
+    .code-input {
+      width: 50px;
+      height: 60px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border: 2px solid var(--border-secondary);
+      border-radius: 8px;
+      font-family: monospace;
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+    
+    .code-input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px rgba(43, 68, 255, 0.1);
+      outline: none;
+    }
+    
+    .code-input:hover {
+      background: var(--bg-input-hover);
+    }
+    
+    .code-inputs-wrapper {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 30px 0;
+    }
+    
+    .verification-notice {
+      background: #f0f4ff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #2B44FF;
+      text-align: center;
+    }
+    
+    .verification-notice p {
+      margin: 0;
+      font-weight: 600;
+      color: #1e40af;
+    }
+    
+    .verification-notice p:first-child {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    
+    .verification-notice p:last-child {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #3b82f6;
+    }
+    
+    .code-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+    
+    .code-hint {
+      color: var(--text-muted);
+      font-size: 14px;
+      text-align: center;
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .code-hint i {
+      margin-right: 4px;
+    }
+  </style>
 </head>
 <body>
   <header class="pageLogo">
@@ -71,13 +116,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     </p>
     
     <div class="container">
-      <?php if ($loginError): ?>
-        <div class="alert error" id="autoAlert"><i class="fas fa-circle-exclamation"></i><?= htmlspecialchars($loginError) ?></div>
-      <?php endif; ?>
+      <!-- Alert pro zprávy -->
+      <div class="alert error" id="loginAlert" style="display:none;">
+        <i class="fas fa-circle-exclamation"></i><span id="loginAlertText"></span>
+      </div>
 
-      <form id="signIn" method="post" class="form-grid" autocomplete="on">
+      <!-- Přihlašovací formulář -->
+      <form id="signIn" class="form-grid" autocomplete="on">
         <h1 class="form-title">Přihlášení</h1>
-        <input type="hidden" name="action" value="login">
         
         <div class="input-group">
           <label for="identifier">Email nebo přezdívka</label>
@@ -100,6 +146,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
         <div class="links">
           <button type="button" id="signUpButton" data-action="show-signup">Nemáš účet?</button>
+        </div>
+      </form>
+
+      <!-- 2FA ověřovací formulář (skrytý) -->
+      <form id="twoFactorForm" class="form-grid" style="display:none;">
+        <h1 class="form-title">Dvoufázové ověření</h1>
+        
+        <div class="verification-notice">
+          <p><i class="fa-solid fa-envelope"></i> Ověřovací kód odeslán</p>
+          <p>Zadej 6místný kód z emailu</p>
+        </div>
+
+        <input type="hidden" id="twoFactorUserId" name="user_id">
+        
+        <div style="margin: 30px 0;">
+          <label class="code-label">Ověřovací kód:</label>
+          <div class="code-inputs-wrapper" id="codeInputs">
+            <input type="text" maxlength="1" class="code-input" data-index="0" autocomplete="off">
+            <input type="text" maxlength="1" class="code-input" data-index="1" autocomplete="off">
+            <input type="text" maxlength="1" class="code-input" data-index="2" autocomplete="off">
+            <input type="text" maxlength="1" class="code-input" data-index="3" autocomplete="off">
+            <input type="text" maxlength="1" class="code-input" data-index="4" autocomplete="off">
+            <input type="text" maxlength="1" class="code-input" data-index="5" autocomplete="off">
+          </div>
+          <p class="code-hint">
+            <i class="fa-solid fa-clock"></i> Kód je platný 10 minut
+          </p>
+        </div>
+
+        <button class="btn" type="submit" id="verify2FAButton">Ověřit</button>
+
+        <div class="links">
+          <button type="button" id="back2FAButton">Zpět na přihlášení</button>
         </div>
       </form>
 
