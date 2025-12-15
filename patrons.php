@@ -170,60 +170,64 @@ if (!$isPatron && !$hasPatron) {
         <p class="muted">Vyber si svého patrona. Kliknutím na jméno odešleš žádost o přiřazení.</p>
       </section>
 
-      <?php if ($isPatron): ?>
-        <section class="cards one">
-          <article class="card">
-            <div class="card-title"><i class="fa-solid fa-users"></i> Moji svěřenci</div>
-            <div class="card-body">
-              <?php if (empty($mentees)): ?>
-                <p class="muted">Zatím nemáš žádné svěřence.</p>
-              <?php else: ?>
-                <div class="mentees-list">
-                  <?php foreach ($mentees as $m): ?>
-                    <div class="mentee-item" style="padding: 12px; background: #f8f9fa; border-radius: 5px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                      <div>
-                        <p style="margin: 0; font-weight: 500;">
-                          <i class="fa-solid fa-user-check"></i> 
-                          <?= htmlspecialchars($m['firstName'] . ' (' . $m['nickname'] . ')', ENT_QUOTES, 'UTF-8') ?>
-                        </p>
-                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">
-                          <?= htmlspecialchars($m['email'], ENT_QUOTES, 'UTF-8') ?>
-                        </p>
-                      </div>
-                      <button 
-                        class="btn-remove-mentee" 
-                        data-mentee-id="<?= (int)$m['Id'] ?>"
-                        data-mentee-nick="<?= htmlspecialchars($m['nickname'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-mentee-email="<?= htmlspecialchars($m['email'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-mentee-name="<?= htmlspecialchars($m['firstName'], ENT_QUOTES, 'UTF-8') ?>"
-                        type="button"
-                        title="Odebrat svěřence"
-                        style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
-                        <i class="fa-solid fa-trash"></i> Odebrat
-                      </button>
-                    </div>
-                  <?php endforeach; ?>
+      <!-- Nahradit sekci "Moji svěřenci" tímto kódem: -->
+
+<?php if ($isPatron): ?>
+  <section class="cards one">
+    <article class="card">
+      <div class="card-title"><i class="fa-solid fa-users"></i> Moji svěřenci</div>
+      <div class="card-body">
+        <?php if (empty($mentees)): ?>
+          <p class="muted">Zatím nemáš žádné svěřence.</p>
+        <?php else: ?>
+          <div class="mentees-list">
+            <?php foreach ($mentees as $m): ?>
+              <div class="mentee-item" style="padding: 12px; background: var(--bg-secondary); border-radius: 5px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-primary);">
+                <div>
+                  <p style="margin: 0; font-weight: 500; color: var(--text-primary);">
+                    <i class="fa-solid fa-user-check"></i> 
+                    <?= htmlspecialchars($m['firstName'] . ' (' . $m['nickname'] . ')', ENT_QUOTES, 'UTF-8') ?>
+                  </p>
+                  <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-muted);">
+                    <?= htmlspecialchars($m['email'], ENT_QUOTES, 'UTF-8') ?>
+                  </p>
                 </div>
-              <?php endif; ?>
-            </div>
-          </article>
-        </section>
-      <?php elseif ($hasPatron): ?>
-        <section class="cards one">
-          <article class="card">
-            <div class="card-title"><i class="fa-solid fa-user-shield"></i> Tvůj patron</div>
-            <div class="card-body">
-              <p>Již máš přiřazeného patrona:</p>
-              <div style="margin-top: 15px; padding: 15px; background: #f0f4ff; border-radius: 5px; border-left: 4px solid #2B44FF;">
-                <p style="margin: 0;">
-                  <strong><?= htmlspecialchars($myPatron['firstName'] . ' (' . $myPatron['nickname'] . ')', ENT_QUOTES, 'UTF-8') ?></strong>
-                </p>
-                <p class="muted" style="margin: 5px 0 0 0; font-size: 14px;">Můžeš s ním spolupracovat na svých cílech.</p>
+                <button 
+                  class="btn-remove-mentee" 
+                  data-mentee-id="<?= (int)$m['Id'] ?>"
+                  data-mentee-nick="<?= htmlspecialchars($m['nickname'], ENT_QUOTES, 'UTF-8') ?>"
+                  data-mentee-email="<?= htmlspecialchars($m['email'], ENT_QUOTES, 'UTF-8') ?>"
+                  data-mentee-name="<?= htmlspecialchars($m['firstName'], ENT_QUOTES, 'UTF-8') ?>"
+                  type="button"
+                  title="Odebrat svěřence"
+                  style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: background 0.2s;"
+                  onmouseover="this.style.background='#c82333'"
+                  onmouseout="this.style.background='#dc3545'">
+                  <i class="fa-solid fa-trash"></i> Odebrat
+                </button>
               </div>
-            </div>
-          </article>
-        </section>
-      <?php else: ?>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+      </div>
+    </article>
+  </section>
+<?php elseif ($hasPatron): ?>
+  <section class="cards one">
+    <article class="card">
+      <div class="card-title"><i class="fa-solid fa-user-shield"></i> Tvůj patron</div>
+      <div class="card-body">
+        <p>Již máš přiřazeného patrona:</p>
+        <div style="margin-top: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 5px; border-left: 4px solid var(--brand);">
+          <p style="margin: 0; color: var(--text-primary);">
+            <strong><?= htmlspecialchars($myPatron['firstName'] . ' (' . $myPatron['nickname'] . ')', ENT_QUOTES, 'UTF-8') ?></strong>
+          </p>
+          <p class="muted" style="margin: 5px 0 0 0; font-size: 14px;">Můžeš s ním spolupracovat na svých cílech.</p>
+        </div>
+      </div>
+    </article>
+  </section>
+<?php else: ?>
         <section class="cards one">
           <article class="card">
             <div class="card-title"><i class="fa-solid fa-user-shield"></i> Seznam patronů</div>
