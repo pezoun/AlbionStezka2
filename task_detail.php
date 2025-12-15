@@ -57,14 +57,11 @@ $categories = [
         'color' => 'green',
         'description' => 'Splním všechny',
         'tasks' => [
-            'Znám skautské pozdravení, handshake a základní znaky',
-            'Umím složit skautskou přísahu a znám skautský zákon',
-            'Znám historii českého skautingu a světového hnutí',
-            'Umím zazpívat hymnu skautingu "Ať dál a dál"',
-            'Orientujem se v organizační struktuře skautingu',
-            'Znám základní skautskou terminologii',
-            'Umím vysvětlit význam skautské lilie a dalších symbolů',
-            'Zúčastnil jsem se skautské akce nebo výpravy',
+            'Znám skautský slib, zákon, heslo a příkaz, rozumím jim a dokáži je vysvětlit',
+            'Znám cíle a poslání skautského hnutí',
+            'Přišiju si nášivky na kroj (jestli to ještě nemám)',
+            'Znám nejdůležitější data a osobnosti světového i českého skautingu',
+            'Znám skautskou symboliku a krojové značení, rozumím jim a dokáži je vysvětlit',
         ]
     ],
     'tabornicke-dovednosti' => [
@@ -72,14 +69,11 @@ $categories = [
         'color' => 'green',
         'description' => 'Splním všechny',
         'tasks' => [
-            'Umím postavit a zapálit táborový oheň',
-            'Znám základní uzly a umím je použít',
-            'Umím postavit přístřešek z přírodních materiálů',
-            'Znám pravidla bezpečnosti v táboře',
-            'Umím orientovat se pomocí mapy a kompasu',
-            'Znám základy první pomoci',
-            'Umím připravit jídlo na ohni',
-            'Zvládnu přespat venku pod širým nebem',
+            'Předvedu, že dokáži v přírodě bezpečně rozdělat oheň (bez papíru, max. tři zápalky) a zahladit ohniště',
+            'Znám různé druhy ohňů (kanadský krb, strážní oheň), alespoň jeden předvedu',
+            'Dokáži rozdělat oheň na táboře v kamnech (připravit si vše potřebné)',
+            'Znám tyto uzly a vím na co se používají: ambulanční spojka, škotový uzel, lodní smyčka, zkracovačka, rybářská spojka, dřevařský uzel, prusík, dvojitá osma, uzel dobrého skutku',
+            'Znám morseovku',
         ]
     ],
     'orientace-v-prirode' => [
@@ -87,14 +81,10 @@ $categories = [
         'color' => 'green',
         'description' => 'Splním všechny',
         'tasks' => [
-            'Umím číst turistickou mapu',
-            'Znám práci s kompasem',
-            'Umím určit světové strany bez pomůcek',
-            'Zvládnu navigaci pomocí GPS',
-            'Znám základní orientační body v terénu',
-            'Umím odhadnout vzdálenost a čas',
-            'Znám pravidla bezpečného pohybu v přírodě',
-            'Zúčastnil jsem se orientačního závodu',
+            'Dokáži určit sever podle slunce a hodinek, měsíce, hvězd',
+            'Dokáži používat buzolu, určit a zaměřit azimut',
+            'Dokáži správně zorientovat turistickou mapu',
+            'Znám základní topografické značky',
         ]
     ],
     'sport-kondice' => [
@@ -102,12 +92,8 @@ $categories = [
         'color' => 'orange',
         'description' => 'Splním alespoň dvě',
         'tasks' => [
-            'Pravidelně provozuji nějaký sport (alespoň 2x týdně)',
-            'Umím plavat a znám základy záchrany tonoucího',
-            'Zvládnu uběhnout 5 km bez zastavení',
-            'Umím si sestavit vlastní tréninkový plán',
-            'Zúčastnil jsem se sportovní soutěže nebo závodu',
-            'Znám cviky pro protažení a správné držení těla',
+            'Naučím ostatní novou sportovní aktivitu nebo hru',
+            'Naučím se nový sport (stolní tenis, volejbal…) a po určitou dobu se mu věnuji',
         ]
     ],
     'zdravy-zivotni-styl' => [
@@ -115,12 +101,9 @@ $categories = [
         'color' => 'orange',
         'description' => 'Splním alespoň dvě',
         'tasks' => [
-            'Znám zásady zdravé výživy a dokážu si připravit vyvážené jídlo',
-            'Vím, jak správně pečovat o duševní zdraví',
-            'Rozumím důležitosti spánku a jeho vlivu na zdraví',
-            'Znám nebezpečí návykových látek a umím říct ne',
-            'Pravidelně dodržuji denní režim',
-            'Vím, jak zvládat stres a relaxovat',
+            'Alespoň dva týdny pravidelně každý den cvičím',
+            'Alespoň dva týdny každý den sním nějaké ovoce nebo zeleninu',
+            'Alespoň dva týdny budu používat kalorické tabulky',
         ]
     ],
     'vedomosti-o-tele' => [
@@ -128,11 +111,7 @@ $categories = [
         'color' => 'orange',
         'description' => 'Splním alespoň jednu',
         'tasks' => [
-            'Znám stavbu lidského těla a funkci hlavních orgánů',
-            'Rozumím změnám v pubertě',
-            'Vím, jak funguje imunitní systém',
-            'Znám zásady osobní hygieny',
-            'Umím poskytnout první pomoc při běžných úrazech',
+            'Přečtu si 10 článků o lidském těle (vědecko-pop. časopisy, encyklopedie, ...)',
         ]
     ],
     'prakticky-zivot' => [
@@ -140,14 +119,16 @@ $categories = [
         'color' => 'blue',
         'description' => 'Splním alespoň pět',
         'tasks' => [
-            'Umím uvařit večeři pro celou rodinu',
-            'Zvládnu si zašít knoflík a opravit menší defekt na oblečení',
-            'Umím se postarat o domácnost (úklid, praní, žehlení)',
-            'Znám základy správy peněz a rozpočtu',
-            'Umím si naplánovat cestu hromadnou dopravou',
-            'Zvládnu základní opravu kola',
-            'Umím pracovat se základními nástroji',
-            'Dokážu si vyřídit potřebné záležitosti na úřadě',
+            'Dokáži používat turistický vařič',
+            'V polních podmínkách uvařím jídlo na ohni nebo turistickém vařiči',
+            'Dokáži správně nabrousit nůž, sekyru a pilu',
+            'Vyřídím si slevovou kartu (např. Leo Express)',
+            'Naučím se žehlit',
+            'Dokáži si zřídit internetovou adresu',
+            'Dokáži sestavit podle návodu nějaký kus nábytku',
+            'Zajistím týdenní rodinný nákup (sepíši seznam, nakoupím)',
+            'Sám si najdu brigádu',
+            'Naučím se vyměňovat prasklé žárovky',
         ]
     ],
     'moje-zajmy' => [
@@ -155,11 +136,8 @@ $categories = [
         'color' => 'blue',
         'description' => 'Splním alespoň dvě',
         'tasks' => [
-            'Věnuji se pravidelně svému koníčku',
-            'Naučil jsem se novou dovednost nebo zlepšil stávající',
-            'Zúčastnil jsem se soutěže nebo přehlídky ve svém zájmu',
-            'Sdílím svůj zájem s ostatními (učím je, vedu kroužek apod.)',
-            'Vytvořil jsem něco souvisejícího s mým koníčkem',
+            'Zúčastním se dne otevřených dveří (v dopravním podniku, divadle, …)',
+            'Po dobu jednoho měsíce každý den přečtu alespoň 10 stran nějaké knihy',
         ]
     ],
     'poznavani-prirody' => [
@@ -167,11 +145,8 @@ $categories = [
         'color' => 'blue',
         'description' => 'Splním alespoň jednu',
         'tasks' => [
-            'Poznám běžné druhy stromů a rostlin v mém okolí',
-            'Umím určit stopy zvířat',
-            'Znám jedovaté a nejedovaté houby',
-            'Rozumím ekosystémům a potravním řetězcům',
-            'Pozoruji a zapisuji si přírodní jevy',
+            'Naučím se určovat alespoň pět nových dřevin, abych jich celkem dokázal určit alespoň patnáct',
+            'Podle vlastního pozorování zhotovím kresbu (rostliny, brouka, ptáka, stromu, apod.)',
         ]
     ],
     'moje-city' => [
@@ -179,11 +154,7 @@ $categories = [
         'color' => 'purple',
         'description' => 'Splním alespoň jednu',
         'tasks' => [
-            'Umím pojmenovat a vyjádřit své emoce',
-            'Dokážu empatie - vcítit se do pocitů druhých',
-            'Vím, jak zvládat náročné situace a neúspěchy',
-            'Umím si všímat hezkých věcí kolem sebe',
-            'Vedu si deník nebo jinak reflektuji své zážitky',
+            'Jeden týden se každý den vyhnu hněvu, podrážděnosti, projevům špatné nálady. Každý večer zhodnotím výsledek',
         ]
     ],
     'umelecka-tvorivost' => [
@@ -191,12 +162,10 @@ $categories = [
         'color' => 'purple',
         'description' => 'Splním alespoň dvě',
         'tasks' => [
-            'Umím hrát na hudební nástroj nebo zpívat',
-            'Vytvořil jsem výtvarné dílo (obraz, sochu, kresbu...)',
-            'Zúčastnil jsem se divadelního představení',
-            'Napsal jsem příběh, báseň nebo jinou literární tvorbu',
-            'Vytvořil jsem něco rukodělného (keramika, origami, pletení...)',
-            'Naučil jsem se tancovat nebo vytvořil choreografii',
+            'Navštívím divadelní představení',
+            'Přečtu jedno dílo klasické literatury',
+            'Vyřežu drobný předmět ze dřeva',
+            'Naučím se hrát na hudební nástroj',
         ]
     ],
     'vnimani-prirody' => [
@@ -204,11 +173,8 @@ $categories = [
         'color' => 'purple',
         'description' => 'Splním alespoň dvě',
         'tasks' => [
-            'Strávil jsem čas v přírodě jen pozorováním a vnímáním',
-            'Vyfotografoval jsem krásy přírody',
-            'Nakreslil jsem přírodní scenérii',
-            'Nasbíral jsem přírodní materiály a vytvořil umělecké dílo',
-            'Napsal jsem o přírodě (básničku, povídku, esej)',
+            'Ochutnám nový druh ovoce',
+            'Vyzkouším si chvíli brodit se naboso potokem nebo mělkou řekou',
         ]
     ],
     'vyjadrovani' => [
@@ -229,11 +195,11 @@ $categories = [
         'color' => 'red',
         'description' => 'Splním alespoň jednu',
         'tasks' => [
+            'Pomůžu dobrovolně při nějaké akci (farní pouť, Noc kostelů, živý betlém, zdobení kostelů na Vánoce, den proti rakovině, …)',
             'Zúčastnil jsem se týmového projektu',
             'Pomohl jsem organizovat akci',
             'Vyřešil jsem konflikt v týmu konstruktivně',
             'Umím přijímat zpětnou vazbu a učit se z ní',
-            'Podporuji ostatní členy týmu',
         ]
     ],
     'respekt' => [
@@ -295,6 +261,80 @@ $categories = [
             'Znám různá náboženství a filozofická učení',
             'Umím být vděčný za to, co mám',
             'Věnuji čas meditaci, modlitbě nebo jiné duchovní praxi',
+        ]
+    ],
+    'sebeovladani' => [
+        'name' => 'Sebeovládání',
+        'color' => 'yellow',
+        'description' => 'Splním alespoň jednu',
+        'tasks' => [
+            'Alespoň dva týdny pravidelně každý den cvičím',
+            'Dokážu odolat pokušení a udržet si disciplínu',
+            'Umím zvládat své emoce v náročných situacích',
+            'Pravidelně si stanovuji cíle a pracuji na jejich splnění',
+            'Dokážu se ovládat i když jsem naštvaný nebo frustrovaný',
+        ]
+    ],
+    'zodpovednost' => [
+        'name' => 'Zodpovědnost',
+        'color' => 'yellow',
+        'description' => 'Splním alespoň dvě',
+        'tasks' => [
+            'Vyrobím něco užitečného pro školu nebo třídu (ve třídě, v rámci výuky, na školním pozemku, apod.) tak, abych byl s výsledkem spokojený já i můj učitel',
+            'Pravidelně plním své povinnosti bez připomínání',
+            'Beru na sebe zodpovědnost za své činy a rozhodnutí',
+            'Pomáhám s domácími pracemi',
+            'Dokončuji, co jsem začal',
+        ]
+    ],
+    'druzinova-schuzka' => [
+        'name' => 'Družinová schůzka',
+        'color' => 'pink',
+        'description' => 'Splním všechny',
+        'tasks' => [
+            'Písemně připravím návrh družinové schůzky na předem zadané téma a podrobně vysvětlím smysl jednotlivých aktivit',
+            'Připravím schůzku pro některou družinu z jiného oddílu (společně s jejím rádcem)',
+            'Zúčastním se aktivně přípravy družinové schůzky',
+            'Umím vést skupinu při aktivitě',
+            'Dokážu reagovat na nečekané situace během schůzky',
+        ]
+    ],
+    'hry' => [
+        'name' => 'Hry',
+        'color' => 'pink',
+        'description' => 'Splním všechny, váha 1/5',
+        'tasks' => [
+            'Dokáži vybrat vhodnou hru pro různé výchovné skupiny, různé účely, různá prostředí',
+            'Připravím si pro ostatní novou hru',
+            'Vím, k čemu jsou cíle a jak je vytvořit. Znám rozdíl mezi cílem a prostředkem',
+            'Vím, co to je symbolický rámec (motivace), znám PMÚZOD, a vím jak jej použít',
+            'Znám různé druhy zpětné vazby a vím, kdy je použít',
+        ]
+    ],
+    'bezpecnost' => [
+        'name' => 'Bezpečnost',
+        'color' => 'pink',
+        'description' => 'Splním všechny, váha 1/6',
+        'tasks' => [
+            'Znám dopravní předpisy pro chůzi a jízdu na kole',
+            'Znám dopravní předpisy ve městě, při jízdě dopravními prostředky, v místnostech, tělocvičně a na hřišti',
+            'Znám zásady bezpečnosti při práci s nářadím, s elektrickými a plynovými spotřebiči, při rozdělávání ohně a znám zásady požární bezpečnosti',
+            'Dokážu přivolat pomoc, znám čísla tísňového volání a znám zásady bezpečnosti při mimořádných událostech',
+            'Znám zásady bezpečnosti při pobytu v přírodě, při bouřce, koupání nebo střelbě, na táboře a při hrách',
+            'Vím, kde jsou v klubovně uzávěry plynu, vody, pojistky a hasicí přístroj',
+        ]
+    ],
+    'zdravoveda' => [
+        'name' => 'Zdravověda',
+        'color' => 'pink',
+        'description' => 'Splním všechny, váha 1/6',
+        'tasks' => [
+            'Znám zásady první pomoci při zástavě krevního oběhu, bezvědomí, zástavě dechu, šoku a tonutí',
+            'Znám zásady první pomoci při alergické reakci, otravě, zásahu elektrickým proudem, bodnutí hmyzem, přisátí klíštěte a kousnutí hadem',
+            'Znám zásady první pomoci při tepenném krvácení, krvácení ze žil, vnitřním krvácení, krvácení z nosu, opaření, popálení, omrznutí, úpalu a úžehu',
+            'Znám zásady první pomoci při přítomnosti cizího tělesa v oku nebo uchu, zlomenině a vymknutí kloubu',
+            'Znám zásady pomoci při bolesti břicha, zvracení nebo průjmu a vysoké teplotě',
+            'Znám základní léky a vím, kdy je použít (paralen, ibalgin, brufen, zodac, analergin, kinedril, borová voda, zyrtec, smekta, živočišné uhlí, panthenol, peroxid, betadine, optalmo-septonex, fenistil)',
         ]
     ],
 ];
