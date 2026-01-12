@@ -377,7 +377,10 @@ $categoryColor = $currentCategory['color'];
 
       <nav class="menu">
         <a class="item" href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
-        <a class="item active" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
+        <a class="item active" href="tasks.php">
+  <i class="fa-solid fa-list-check"></i><span>Úkoly</span>
+  <span class="pill" id="tasksPill">0</span>
+</a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
        <?php if ($isAdmin): ?>
   <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
@@ -646,6 +649,23 @@ $categoryColor = $currentCategory['color'];
       
       draw();
     }
+
+    function updateSidebarTasksPill() {
+  const pill = document.getElementById('tasksPill');
+  if (!pill) return;
+
+  const tp = taskProgress();
+  const completed = tp.getCompletedTasksCount.call(tp);
+
+  pill.textContent = completed;
+}
+
+document.addEventListener('DOMContentLoaded', updateSidebarTasksPill);
+
+// když se úkoly změní v jiné záložce (storage event)
+window.addEventListener('storage', (e) => {
+  if (e.key && e.key.startsWith('tasks_')) updateSidebarTasksPill();
+});
   </script>
   <script src="script.js"></script>
   <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>

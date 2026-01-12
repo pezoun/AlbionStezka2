@@ -87,7 +87,10 @@ if ($isAdmin || $isApprover) {
 
       <nav class="menu">
         <a class="item" href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
-        <a class="item active" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
+        <a class="item active" href="tasks.php">
+  <i class="fa-solid fa-list-check"></i><span>Úkoly</span>
+  <span class="pill" id="tasksPill">0</span>
+</a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
        <?php if ($isAdmin): ?>
   <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
@@ -719,62 +722,109 @@ if ($isAdmin || $isApprover) {
     function taskProgress() {
       return {
         categories: {
-          'skauting': 8,
-          'tabornicke-dovednosti': 8,
-          'orientace-v-prirode': 8,
-          'sport-kondice': 6,
-          'zdravy-zivotni-styl': 6,
-          'vedomosti-o-tele': 5,
-          'prakticky-zivot': 8,
-          'moje-zajmy': 5,
-          'poznavani-prirody': 5,
-          'moje-city': 5,
-          'umelecka-tvorivost': 6,
-          'vnimani-prirody': 5,
-          'vyjadrovani': 6,
-          'spoluprace': 5,
-          'respekt': 5,
-          'sluzba-potrebnym': 5,
-          'neziji-sam': 5,
-          'ochrana-prirody': 6,
-          'duchovno': 5,
-          'sebeovladani': 5,
-          'zodpovednost': 5,
-          'druzinova-schuzka': 5,
-          'hry': 5,
-          'bezpecnost': 6,
-          'zdravoveda': 6
+          'skauting': 5,
+  'tabornicke-dovednosti': 5,
+  'orientace-v-prirode': 4,
+  'sport-kondice': 2,
+  'zdravy-zivotni-styl': 3,
+  'vedomosti-o-tele': 1,
+  'prakticky-zivot': 10,
+  'moje-zajmy': 2,
+  'poznavani-prirody': 2,
+  'moje-city': 1,
+  'umelecka-tvorivost': 4,
+  'vnimani-prirody': 2,
+  'vyjadrovani': 6,
+  'spoluprace': 5,
+  'respekt': 5,
+  'sluzba-potrebnym': 5,
+  'neziji-sam': 5,
+  'ochrana-prirody': 6,
+  'duchovno': 5,
+  'sebeovladani': 5,
+  'zodpovednost': 5,
+  'druzinova-schuzka': 5,
+  'hry': 5,
+  'bezpecnost': 6,
+  'zdravoveda': 6
         },
-        
         getCategoryStatus(categoryKey) {
-          const tasks = JSON.parse(localStorage.getItem(`tasks_${categoryKey}`) || '{}');
-          const totalTasks = this.categories[categoryKey] || 0;
-          
-          if (totalTasks === 0) return { completed: false, inProgress: false };
-          
-          const taskValues = Object.values(tasks);
-          const completedCount = taskValues.filter(t => t === 2).length;
-          const inProgressCount = taskValues.filter(t => t === 1).length;
-          
-          return {
-            completed: completedCount === totalTasks,
-            inProgress: inProgressCount > 0 || completedCount > 0
-          };
-        },
+  const raw = JSON.parse(localStorage.getItem(`tasks_${categoryKey}`) || '{}');
+  const totalTasks = this.categories[categoryKey] || 0;
+
+  if (totalTasks === 0) return { completed: false, inProgress: false };
+
+  const normalize = (v) => {
+    if (v && typeof v === 'object') {
+      if ('status' in v) return Number(v.status);
+      if ('state' in v) return Number(v.state);
+      if ('value' in v) return Number(v.value);
+      return NaN;
+    }
+    if (typeof v === 'boolean') return v ? 2 : 0;
+    if (typeof v === 'string') {
+      const s = v.trim().toLowerCase();
+      if (s === '2' || s === 'done' || s === 'completed' || s === 'complete') return 2;
+      if (s === '1' || s === 'inprogress' || s === 'progress' || s === 'doing') return 1;
+      if (s === '0') return 0;
+      return Number(v);
+    }
+    return Number(v);
+  };
+
+  // vezmeme hodnoty, seřadíme podle klíčů (aby pořadí bylo stabilní) a vezmeme jen tolik, kolik má mít kategorie úkolů
+  const values = Object.keys(raw)
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    .map(k => normalize(raw[k]))
+    .filter(v => v === 0 || v === 1 || v === 2)
+    .slice(0, totalTasks);
+
+  // když je uložených méně než totalTasks, bereme chybějící jako nedokončené (0)
+  const completedCount = values.filter(v => v === 2).length;
+  const inProgressCount = values.filter(v => v === 1).length;
+
+  const completed = completedCount === totalTasks;
+
+  return {
+    completed,
+    inProgress: !completed && (inProgressCount > 0 || completedCount > 0)
+  };
+},
         
         getTotalTasksCount() {
           return Object.values(this.categories).reduce((sum, count) => sum + count, 0);
         },
         
         getCompletedTasksCount() {
-          let completed = 0;
-          Object.keys(this.categories).forEach(categoryKey => {
-            const tasks = JSON.parse(localStorage.getItem(`tasks_${categoryKey}`) || '{}');
-            const taskValues = Object.values(tasks);
-            completed += taskValues.filter(t => t === 2).length;
-          });
-          return completed;
-        },
+  let completed = 0;
+
+  const normalize = (v) => {
+    if (v && typeof v === 'object') {
+      if ('status' in v) return Number(v.status);
+      if ('state' in v) return Number(v.state);
+      if ('value' in v) return Number(v.value);
+      return NaN;
+    }
+    if (typeof v === 'boolean') return v ? 2 : 0;
+    if (typeof v === 'string') return Number(v);
+    return Number(v);
+  };
+
+  Object.keys(this.categories).forEach(categoryKey => {
+    const raw = JSON.parse(localStorage.getItem(`tasks_${categoryKey}`) || '{}');
+    const totalTasks = this.categories[categoryKey] || 0;
+
+    const values = Object.keys(raw)
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+      .map(k => normalize(raw[k]))
+      .filter(v => v === 0 || v === 1 || v === 2)
+      .slice(0, totalTasks);
+
+    completed += values.filter(v => v === 2).length;
+  });
+
+  return completed;
+},
         
         getOverallProgress() {
           const total = this.getTotalTasksCount();
@@ -806,6 +856,23 @@ if ($isAdmin || $isApprover) {
         }, 5000);
       }
     })();
+
+    function updateSidebarTasksPill() {
+  const pill = document.getElementById('tasksPill');
+  if (!pill) return;
+
+  const tp = taskProgress();
+  const completed = tp.getCompletedTasksCount.call(tp);
+
+  pill.textContent = completed;
+}
+
+document.addEventListener('DOMContentLoaded', updateSidebarTasksPill);
+
+// když se úkoly změní v jiné záložce (storage event)
+window.addEventListener('storage', (e) => {
+  if (e.key && e.key.startsWith('tasks_')) updateSidebarTasksPill();
+});
   </script>
   <script src="script.js"></script>
 </body>
