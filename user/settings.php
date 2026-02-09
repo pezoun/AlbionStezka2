@@ -4,12 +4,12 @@ session_start();
 
 $loggedUserId = (int)($_SESSION['user_id'] ?? 0);
 
-require_once __DIR__ . '/connect.php';
-require_once __DIR__ . '/is_admin.php';
-require_once __DIR__ . '/is_approver.php';
+require_once __DIR__ . '/../config/connect.php';
+require_once __DIR__ . '/../admin/is_admin.php';
+require_once __DIR__ . '/../admin/is_approver.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -60,34 +60,34 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer"/>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body class="layout light">
 
   <!-- SIDEBAR -->
   <aside class="sidenav" aria-label="Hlavní navigace">
     <div class="nav-top">
-      <a class="brand" href="homepage.php">
+      <a class="brand" href="../pages/homepage.php">
         <i class="fa-solid fa-layer-group"></i>
         <span>Albion Stezka</span>
       </a>
 
       <nav class="menu">
-        <a class="item" href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
-        <a class="item" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
-        <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
+        <a class="item" href="../pages/homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
+        <a class="item" href="../pages/tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
+        <a class="item" href="../pages/patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
         <?php if ($isAdmin): ?>
-  <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
+  <a class="item" href="../admin/manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
 <?php endif; ?>
 <?php if ($isAdmin || $isApprover): ?>
-  <a class="item" href="approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
+  <a class="item" href="../admin/approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
     <?php if ($pendingCount > 0): ?>
       <span class="pill" style="background: #ef4444; color: white; border-color: #ef4444;"><?php echo $pendingCount; ?></span>
     <?php endif; ?>
   </a>
 <?php endif; ?>
 <?php if ($isAdmin): ?>
-  <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+  <a class="item" href="../admin/admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
 <?php endif; ?>
       </nav>
     </div>
@@ -96,7 +96,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
       <div class="section">Profil</div>
       <a class="item" href="profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
       <a class="item active" href="settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
-      <a class="item danger" href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
+      <a class="item danger" href="../auth/logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
     </div>
   </aside>
 
@@ -410,7 +410,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
   </div>
 
   <div class="overlay" id="overlay"></div>
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
   <script>
     // Mobile sidebar
     const openBtn = document.getElementById('openNav');
@@ -525,7 +525,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
     confirmDeleteBtn?.addEventListener('click', async function() {
       // Zde by byl AJAX request na server pro smazání účtu
       alert('Funkce smazání účtu bude implementována na serveru.');
-      // window.location.href = 'api/delete_account.php';
+      // window.location.href = '../api/delete_account.php';
     });
 
     // Zavření modalu
@@ -545,7 +545,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
     // Načti stav 2FA při načtení stránky
     async function load2FAStatus() {
       try {
-        const res = await fetch('api/get_2fa_status.php');
+        const res = await fetch('../api/get_2fa_status.php');
         const json = await res.json();
         
         if (json.ok) {
@@ -588,7 +588,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
     setup2FABtn?.addEventListener('click', async function() {
       // Načti aktuální stav
       try {
-        const res = await fetch('api/get_2fa_status.php');
+        const res = await fetch('../api/get_2fa_status.php');
         const json = await res.json();
         
         if (json.ok) {
@@ -622,7 +622,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
           const body = new URLSearchParams();
           body.set('action', 'enable');
           
-          const res = await fetch('api/toggle_2fa.php', {
+          const res = await fetch('../api/toggle_2fa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body
@@ -663,7 +663,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
           body.set('action', 'verify');
           body.set('code', code);
           
-          const res = await fetch('api/toggle_2fa.php', {
+          const res = await fetch('../api/toggle_2fa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body
@@ -704,7 +704,7 @@ $firstName = explode(' ', trim($user['name']))[0] ?: 'Uživatel';
           body.set('action', 'disable');
           body.set('password', password);
           
-          const res = await fetch('api/toggle_2fa.php', {
+          const res = await fetch('../api/toggle_2fa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body

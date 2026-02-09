@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 session_start();
-require_once __DIR__ . '/../connect.php';
+require_once __DIR__ . '/../config/connect.php';
 require_once __DIR__ . '/../emailSent.php';
 
 // 1) Ověříme, že je uživatel přihlášený
@@ -57,7 +57,7 @@ $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : '
 $host = $_SERVER['HTTP_HOST'];
 $baseUrl = $protocol . '://' . $host . '/AlbionStezka2';
 
-$resetLink = $baseUrl . '/password_reset.php?token=' . $resetToken;
+$resetLink = $baseUrl . '/auth/password_reset.php?token=' . $resetToken;
 
 $subject = "Žádost o změnu hesla - Albion stezka 🔐";
 

@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once __DIR__ . '/connect.php';
+require_once __DIR__ . '/config/connect.php';
 
 if (!empty($_SESSION['user_id'])) {
-    header('Location: homepage.php');
+    header('Location: pages/homepage.php');
     exit;
 }
 
@@ -19,7 +19,7 @@ $loginError = '';
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Inline styles pro 2FA kód inputy */
+    
     .code-input {
       width: 50px;
       height: 60px;
@@ -183,7 +183,7 @@ $loginError = '';
       </form>
 
       <!-- Registrace -->
-      <form id="signup" method="post" action="register.php" class="form-grid" style="display:none" autocomplete="off">
+      <form id="signup" method="post" action="auth/register.php" class="form-grid" style="display:none" autocomplete="off">
         <h2 class="form-title">Registrace</h2>
 
         <div class="input-row">

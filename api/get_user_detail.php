@@ -1,8 +1,8 @@
 <?php
 // api/get_user_detail.php
 session_start();
-require_once __DIR__ . '/../connect.php';
-require_once __DIR__ . '/../is_admin.php';
+require_once __DIR__ . '/../config/connect.php';
+require_once __DIR__ . '/../admin/is_admin.php';
 
 header('Content-Type: application/json');
 

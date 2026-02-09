@@ -1,12 +1,12 @@
 <?php
 session_start();
 $loggedUserId = (int)($_SESSION['user_id'] ?? 0);
-require_once __DIR__ . '/connect.php';
-require_once __DIR__ . '/is_admin.php';
-require_once __DIR__ . '/is_approver.php';
+require_once __DIR__ . '/../config/connect.php';
+require_once __DIR__ . '/../admin/is_admin.php';
+require_once __DIR__ . '/../admin/is_approver.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -360,7 +360,7 @@ $categoryColor = $currentCategory['color'];
 
   <!-- Ikony + styly -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer"/>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -383,26 +383,26 @@ $categoryColor = $currentCategory['color'];
 </a>
         <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
        <?php if ($isAdmin): ?>
-  <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
+  <a class="item" href="../admin/manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
 <?php endif; ?>
 <?php if ($isAdmin || $isApprover): ?>
-  <a class="item" href="approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
+  <a class="item" href="../admin/approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
     <?php if ($pendingCount > 0): ?>
       <span class="pill" style="background: #ef4444; color: white; border-color: #ef4444;"><?php echo $pendingCount; ?></span>
     <?php endif; ?>
   </a>
 <?php endif; ?>
 <?php if ($isAdmin): ?>
-  <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+  <a class="item" href="../admin/admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
 <?php endif; ?>
       </nav>
     </div>
 
     <div class="nav-bottom">
       <div class="section">Profil</div>
-      <a class="item" href="profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
-      <a class="item" href="settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
-      <a class="item danger" href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
+      <a class="item" href="../user/profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
+      <a class="item" href="../user/settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
+      <a class="item danger" href="../auth/logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
     </div>
   </aside>
 
@@ -481,6 +481,7 @@ $categoryColor = $currentCategory['color'];
           <div class="card-title">
             <i class="fas fa-chart-line"></i>
             <span>Pokrok</span>
+            <span x-show="loading" class="loading-indicator">🔄 Načítám...</span>
           </div>
           <div class="progress-bar">
             <div 
@@ -490,11 +491,12 @@ $categoryColor = $currentCategory['color'];
             ></div>
           </div>
           <div class="progress-stats">
-            <p class="progress-text">
+            <p class="progress-text" x-show="!loading">
               <strong x-text="completed"></strong> hotovo &middot; 
               <strong x-text="inProgress"></strong> rozpracováno &middot; 
               <strong x-text="totalTasks - completed - inProgress"></strong> nezačato
             </p>
+            <p x-show="loading" class="progress-text">Načítám pokrok...</p>
           </div>
         </div>
       </section>
@@ -522,19 +524,64 @@ $categoryColor = $currentCategory['color'];
         percentage: 0,
         categoryKey: '<?php echo $category; ?>',
         totalTasks: <?php echo count($currentCategory['tasks']); ?>,
+        loading: true,
         
-        init() {
-          // Load saved progress from localStorage
-          const savedProgress = localStorage.getItem(`tasks_${this.categoryKey}`);
-          if (savedProgress) {
-            this.tasks = JSON.parse(savedProgress);
-          } else {
-            // Initialize all tasks as not started (0)
-            for (let i = 0; i < this.totalTasks; i++) {
-              this.tasks[i] = 0;
-            }
+        async init() {
+          // Initialize all tasks as not started first
+          for (let i = 0; i < this.totalTasks; i++) {
+            this.tasks[i] = 0;
           }
-          this.updateProgress();
+          
+          // Load saved progress from database and wait for it
+          await this.loadProgressFromDatabase();
+          this.loading = false;
+        },
+        
+        async loadProgressFromDatabase() {
+          try {
+            console.log('Loading progress for category:', this.categoryKey);
+            
+            if (!this.categoryKey || this.categoryKey === '') {
+              console.warn('No category key provided, cannot load progress');
+              return;
+            }
+            
+            const response = await fetch(`../api/load_task_progress.php?category_key=${this.categoryKey}`);
+            
+            console.log('API response status:', response.status, response.statusText);
+            
+            if (!response.ok) {
+              console.error('API request failed:', response.status, response.statusText);
+              const errorText = await response.text();
+              console.error('Error response:', errorText);
+              return;
+            }
+            
+            const result = await response.json();
+            console.log('Progress load result:', result);
+            
+            if (result.success && result.data.progress) {
+              // Apply saved progress to existing tasks array
+              for (const [taskIndex, taskData] of Object.entries(result.data.progress)) {
+                const index = parseInt(taskIndex);
+                if (index >= 0 && index < this.totalTasks) {
+                  this.tasks[index] = taskData.status;
+                  console.log(`Restored task ${index} to status ${taskData.status}`);
+                }
+              }
+              
+              console.log('Final tasks array after load:', this.tasks);
+              // Update the UI
+              this.updateProgress(false);
+            } else if (result.error) {
+              console.error('API returned error:', result.error);
+            } else {
+              console.log('No existing progress found, starting fresh');
+            }
+          } catch (error) {
+            console.error('Error loading task progress:', error);
+            console.error('Error details:', error.message, error.stack);
+          }
         },
         
         getTaskState(index) {
@@ -544,11 +591,42 @@ $categoryColor = $currentCategory['color'];
         cycleTaskState(index) {
           // Cycle through states: 0 (not started) -> 1 (in progress) -> 2 (completed) -> 0
           const currentState = this.tasks[index] || 0;
-          this.tasks[index] = (currentState + 1) % 3;
-          this.updateProgress();
+          const newState = (currentState + 1) % 3;
+          this.tasks[index] = newState;
+          
+          // Save to database immediately
+          this.saveTaskProgress(index, newState);
+          
+          this.updateProgress(false); // Don't save again in updateProgress
         },
         
-        updateProgress() {
+        async saveTaskProgress(taskIndex, status) {
+          try {
+            const response = await fetch('../api/save_task_progress.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                category_key: this.categoryKey,
+                task_index: taskIndex,
+                status: status
+              })
+            });
+            
+            const result = await response.json();
+            
+            if (!result.success) {
+              console.error('Failed to save task progress:', result.error);
+              // Optionally show user feedback
+            }
+          } catch (error) {
+            console.error('Error saving task progress:', error);
+            // Optionally show user feedback or retry logic
+          }
+        },
+        
+        updateProgress(shouldSave = true) {
           // Count completed and in-progress tasks
           const prevCompleted = this.completed;
           this.completed = Object.values(this.tasks).filter(t => t === 2).length;
@@ -560,8 +638,8 @@ $categoryColor = $currentCategory['color'];
             this.celebrate();
           }
           
-          // Save to localStorage
-          localStorage.setItem(`tasks_${this.categoryKey}`, JSON.stringify(this.tasks));
+          // Database saving is now handled in saveTaskProgress method
+          // No longer using localStorage
         },
         
         celebrate() {
@@ -654,10 +732,8 @@ $categoryColor = $currentCategory['color'];
   const pill = document.getElementById('tasksPill');
   if (!pill) return;
 
-  const tp = taskProgress();
-  const completed = tp.getCompletedTasksCount.call(tp);
-
-  pill.textContent = completed;
+  // This functionality is now handled by the Alpine.js component
+  // The pill will be updated when the page loads with the correct progress
 }
 
 document.addEventListener('DOMContentLoaded', updateSidebarTasksPill);
@@ -667,7 +743,7 @@ window.addEventListener('storage', (e) => {
   if (e.key && e.key.startsWith('tasks_')) updateSidebarTasksPill();
 });
   </script>
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
   <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
 </body>
 </html>

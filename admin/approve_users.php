@@ -1,12 +1,12 @@
 <?php
 // approve_users.php
 session_start();
-require_once __DIR__ . '/connect.php';
+require_once __DIR__ . '/../config/connect.php';
 require_once __DIR__ . '/is_admin.php';
 require_once __DIR__ . '/is_approver.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -16,7 +16,7 @@ $isApprover = is_approver($conn, $loggedUserId);
 
 // Musí být admin NEBO schvalovač
 if (!$isAdmin && !$isApprover) {
-    header('Location: homepage.php');
+    header('Location: ../pages/homepage.php');
     exit;
 }
 
@@ -39,21 +39,21 @@ while ($row = $result->fetch_assoc()) {
   <title>Schvalování uživatelů | Albion Stezka</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body class="layout light">
 
   <!-- SIDEBAR -->
   <aside class="sidenav">
     <div class="nav-top">
-      <a class="brand" href="homepage.php">
+      <a class="brand" href="../pages/homepage.php">
         <i class="fa-solid fa-layer-group"></i>
         <span>Albion Stezka</span>
       </a>
       <nav class="menu">
-         <a class="item " href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
-        <a class="item" href="homepage.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
-        <a class="item" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
+         <a class="item " href="../pages/homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
+        <a class="item" href="../pages/homepage.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
+        <a class="item" href="../pages/patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
         <?php if ($isAdmin): ?>
           <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
         <?php endif; ?>
@@ -71,9 +71,9 @@ while ($row = $result->fetch_assoc()) {
     </div>
     <div class="nav-bottom">
       <div class="section">Profil</div>
-      <a class="item" href="profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
-      <a class="item" href="settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
-      <a class="item danger" href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
+      <a class="item" href="../user/profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
+      <a class="item" href="../user/settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
+      <a class="item danger" href="../auth/logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
     </div>
   </aside>
 
@@ -155,7 +155,7 @@ while ($row = $result->fetch_assoc()) {
 
   <div class="overlay" id="overlay"></div>
 
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
   <script>
     // Mobilní sidebar
     const openBtn = document.getElementById('openNav');
@@ -172,7 +172,7 @@ while ($row = $result->fetch_assoc()) {
         body.set('user_id', userId);
         body.set('action', 'approve');
 
-        const res = await fetch('api/approve_user.php', {
+        const res = await fetch('../api/approve_user.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body
@@ -200,7 +200,7 @@ while ($row = $result->fetch_assoc()) {
         body.set('user_id', userId);
         body.set('action', 'reject');
 
-        const res = await fetch('api/approve_user.php', {
+        const res = await fetch('../api/approve_user.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body

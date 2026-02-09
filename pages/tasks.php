@@ -2,12 +2,12 @@
 // homepage.php
 session_start();
 $loggedUserId = (int)($_SESSION['user_id'] ?? 0);
-require_once __DIR__ . '/connect.php';
-require_once __DIR__ . '/is_admin.php';
-require_once __DIR__ . '/is_approver.php';
+require_once __DIR__ . '/../config/connect.php';
+require_once __DIR__ . '/../admin/is_admin.php';
+require_once __DIR__ . '/../admin/is_approver.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -70,7 +70,7 @@ if ($isAdmin || $isApprover) {
 
   <!-- Ikony + styly -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer"/>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -103,7 +103,7 @@ if ($isAdmin || $isApprover) {
   </a>
 <?php endif; ?>
 <?php if ($isAdmin): ?>
-  <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+  <a class="item" href="../admin/admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
 <?php endif; ?>
       </nav>
     </div>
@@ -748,83 +748,75 @@ if ($isAdmin || $isApprover) {
   'bezpecnost': 6,
   'zdravoveda': 6
         },
+        userProgress: {}, // Store all user progress data
+        
+        async init() {
+          // Load all progress data from database on component init
+          await this.loadAllProgress();
+        },
+        
+        async loadAllProgress() {
+          try {
+            // Load progress for all categories
+            for (const categoryKey of Object.keys(this.categories)) {
+              const response = await fetch(`../api/load_task_progress.php?category_key=${categoryKey}`);
+              const result = await response.json();
+              
+              if (result.success && result.data.progress) {
+                this.userProgress[categoryKey] = result.data.progress;
+              }
+            }
+          } catch (error) {
+            console.error('Error loading task progress:', error);
+          }
+        },
         getCategoryStatus(categoryKey) {
-  const raw = JSON.parse(localStorage.getItem(`tasks_${categoryKey}`) || '{}');
-  const totalTasks = this.categories[categoryKey] || 0;
-
-  if (totalTasks === 0) return { completed: false, inProgress: false };
-
-  const normalize = (v) => {
-    if (v && typeof v === 'object') {
-      if ('status' in v) return Number(v.status);
-      if ('state' in v) return Number(v.state);
-      if ('value' in v) return Number(v.value);
-      return NaN;
-    }
-    if (typeof v === 'boolean') return v ? 2 : 0;
-    if (typeof v === 'string') {
-      const s = v.trim().toLowerCase();
-      if (s === '2' || s === 'done' || s === 'completed' || s === 'complete') return 2;
-      if (s === '1' || s === 'inprogress' || s === 'progress' || s === 'doing') return 1;
-      if (s === '0') return 0;
-      return Number(v);
-    }
-    return Number(v);
-  };
-
-  // vezmeme hodnoty, seřadíme podle klíčů (aby pořadí bylo stabilní) a vezmeme jen tolik, kolik má mít kategorie úkolů
-  const values = Object.keys(raw)
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-    .map(k => normalize(raw[k]))
-    .filter(v => v === 0 || v === 1 || v === 2)
-    .slice(0, totalTasks);
-
-  // když je uložených méně než totalTasks, bereme chybějící jako nedokončené (0)
-  const completedCount = values.filter(v => v === 2).length;
-  const inProgressCount = values.filter(v => v === 1).length;
-
-  const completed = completedCount === totalTasks;
-
-  return {
-    completed,
-    inProgress: !completed && (inProgressCount > 0 || completedCount > 0)
-  };
-},
+          const totalTasks = this.categories[categoryKey] || 0;
+          if (totalTasks === 0) return { completed: false, inProgress: false };
+          
+          const progress = this.userProgress[categoryKey] || {};
+          
+          let completedCount = 0;
+          let inProgressCount = 0;
+          
+          // Count tasks by status from database progress
+          for (let i = 0; i < totalTasks; i++) {
+            const taskProgress = progress[i];
+            if (taskProgress) {
+              const status = taskProgress.status || 0;
+              if (status === 2) completedCount++;
+              else if (status === 1) inProgressCount++;
+            }
+          }
+          
+          const completed = completedCount === totalTasks;
+          const inProgress = !completed && (inProgressCount > 0 || completedCount > 0);
+          
+          return { completed, inProgress };
+        },
         
         getTotalTasksCount() {
           return Object.values(this.categories).reduce((sum, count) => sum + count, 0);
         },
         
         getCompletedTasksCount() {
-  let completed = 0;
-
-  const normalize = (v) => {
-    if (v && typeof v === 'object') {
-      if ('status' in v) return Number(v.status);
-      if ('state' in v) return Number(v.state);
-      if ('value' in v) return Number(v.value);
-      return NaN;
-    }
-    if (typeof v === 'boolean') return v ? 2 : 0;
-    if (typeof v === 'string') return Number(v);
-    return Number(v);
-  };
-
-  Object.keys(this.categories).forEach(categoryKey => {
-    const raw = JSON.parse(localStorage.getItem(`tasks_${categoryKey}`) || '{}');
-    const totalTasks = this.categories[categoryKey] || 0;
-
-    const values = Object.keys(raw)
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-      .map(k => normalize(raw[k]))
-      .filter(v => v === 0 || v === 1 || v === 2)
-      .slice(0, totalTasks);
-
-    completed += values.filter(v => v === 2).length;
-  });
-
-  return completed;
-},
+          let completed = 0;
+          
+          Object.keys(this.categories).forEach(categoryKey => {
+            const totalTasks = this.categories[categoryKey] || 0;
+            const progress = this.userProgress[categoryKey] || {};
+            
+            // Count completed tasks (status = 2) in this category
+            for (let i = 0; i < totalTasks; i++) {
+              const taskProgress = progress[i];
+              if (taskProgress && taskProgress.status === 2) {
+                completed++;
+              }
+            }
+          });
+          
+          return completed;
+        },
         
         getOverallProgress() {
           const total = this.getTotalTasksCount();
@@ -857,23 +849,58 @@ if ($isAdmin || $isApprover) {
       }
     })();
 
-    function updateSidebarTasksPill() {
-  const pill = document.getElementById('tasksPill');
-  if (!pill) return;
-
-  const tp = taskProgress();
-  const completed = tp.getCompletedTasksCount.call(tp);
-
-  pill.textContent = completed;
-}
+    async function updateSidebarTasksPill() {
+      const pill = document.getElementById('tasksPill');
+      if (!pill) return;
+      
+      try {
+        // Get total completed tasks across all categories
+        let totalCompleted = 0;
+        const categories = {
+          'skauting': 5, 'tabornicke-dovednosti': 5, 'orientace-v-prirode': 4,
+          'sport-kondice': 2, 'zdravy-zivotni-styl': 3, 'vedomosti-o-tele': 1,
+          'prakticky-zivot': 10, 'moje-zajmy': 2, 'poznavani-prirody': 2,
+          'moje-city': 1, 'umelecka-tvorivost': 4, 'vnimani-prirody': 2,
+          'vyjadrovani': 6, 'spoluprace': 5, 'respekt': 5, 'sluzba-potrebnym': 5,
+          'neziji-sam': 5, 'ochrana-prirody': 6, 'duchovno': 5, 'sebeovladani': 5,
+          'zodpovednost': 5, 'druzinova-schuzka': 5, 'hry': 5, 'bezpecnost': 6,
+          'zdravoveda': 6
+        };
+        
+        for (const categoryKey of Object.keys(categories)) {
+          const response = await fetch(`../api/load_task_progress.php?category_key=${categoryKey}`);
+          const result = await response.json();
+          
+          if (result.success && result.data.progress) {
+            const progress = result.data.progress;
+            const totalTasks = categories[categoryKey];
+            
+            for (let i = 0; i < totalTasks; i++) {
+              const taskProgress = progress[i];
+              if (taskProgress && taskProgress.status === 2) {
+                totalCompleted++;
+              }
+            }
+          }
+        }
+        
+        pill.textContent = totalCompleted;
+      } catch (error) {
+        console.error('Error updating tasks pill:', error);
+        // Fallback to 0
+        pill.textContent = '0';
+      }
+    }
 
 document.addEventListener('DOMContentLoaded', updateSidebarTasksPill);
 
-// když se úkoly změní v jiné záložce (storage event)
-window.addEventListener('storage', (e) => {
-  if (e.key && e.key.startsWith('tasks_')) updateSidebarTasksPill();
+// Refresh task pill when user returns to this page (in case they completed tasks elsewhere)
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    updateSidebarTasksPill();
+  }
 });
   </script>
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
 </body>
 </html>

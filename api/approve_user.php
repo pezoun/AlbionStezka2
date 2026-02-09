@@ -3,9 +3,9 @@
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../connect.php';
-require_once __DIR__ . '/../is_admin.php';
-require_once __DIR__ . '/../is_approver.php';
+require_once __DIR__ . '/../config/connect.php';
+require_once __DIR__ . '/../admin/is_admin.php';
+require_once __DIR__ . '/../admin/is_approver.php';
 require_once __DIR__ . '/../emailSent.php';
 
 if (!isset($_SESSION['user_id'])) {
