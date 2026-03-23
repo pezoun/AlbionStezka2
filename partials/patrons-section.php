@@ -3,7 +3,7 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 // 1) Připojení k DB – očekáváme, že connect.php vytvoří buď $pdo (PDO) nebo $conn (mysqli)
-require_once __DIR__ . '/../connect.php';
+require_once __DIR__ . '/../config/connect.php';
 
 // 2) Získání ID přihlášeného uživatele ze session (zkusíme pár běžných klíčů)
 $userId = $_SESSION['user_id'] ?? $_SESSION['Id'] ?? $_SESSION['id'] ?? null;

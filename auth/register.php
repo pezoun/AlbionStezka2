@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/connect.php';
+require_once __DIR__ . '/../config/connect.php';
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Přesměrování na info stránku místo přihlášení
             $_SESSION['pending_approval'] = true;
             $_SESSION['pending_email'] = $email;
-            header('Location: pending_approval.php');
+            header('Location: ../admin/pending_approval.php');
             exit;
         } else {
             $errors[] = 'Registrace se nezdařila. Zkus to prosím znovu.';
@@ -91,6 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $query = http_build_query(['form' => 'register']);
 $_SESSION['register_errors'] = $errors;
-header('Location: index.php?' . $query);
+header('Location: ../index.php?' . $query);
 exit;
 ?>

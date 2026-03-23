@@ -2,12 +2,12 @@
 // patrons.php
 session_start();
 $loggedUserId = (int)($_SESSION['user_id'] ?? 0);
-require_once __DIR__ . '/connect.php';
-require_once __DIR__ . '/is_admin.php';
-require_once __DIR__ . '/is_approver.php';
+require_once __DIR__ . '/../config/connect.php';
+require_once __DIR__ . '/../admin/is_admin.php';
+require_once __DIR__ . '/../admin/is_approver.php';
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['email']) && !isset($_SESSION['user_email'])) {
-  header('Location: index.php');
+  header('Location: ../index.php');
   exit;
 }
 // Je přihlášený admin?
@@ -119,7 +119,7 @@ if (!$isPatron && !$hasPatron) {
   <title>Patroni</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body class="layout light">
   <!-- SIDEBAR -->
@@ -132,28 +132,28 @@ if (!$isPatron && !$hasPatron) {
 
       <nav class="menu">
         <a class="item" href="homepage.php"><i class="fa-solid fa-house"></i><span>Uvítání</span></a>
-        <a class="item" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span class="pill">0</span></a>
+        <a class="item" href="tasks.php"><i class="fa-solid fa-list-check"></i><span>Úkoly</span><span id="tasksPill" class="pill">0</span></a>
         <a class="item active" href="patrons.php"><i class="fa-solid fa-user-shield"></i><span>Patroni</span></a>
         <?php if ($isAdmin): ?>
-  <a class="item" href="manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
+  <a class="item" href="../admin/manage_patrons.php"><i class="fa-solid fa-screwdriver-wrench"></i><span>Správa Patronů</span></a>
 <?php endif; ?>
 <?php if ($isAdmin || $isApprover): ?>
-  <a class="item" href="approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
+  <a class="item" href="../admin/approve_users.php"><i class="fa-solid fa-user-check"></i><span>Schvalování</span>
     <?php if ($pendingCount > 0): ?>
       <span class="pill" style="background: #ef4444; color: white; border-color: #ef4444;"><?php echo $pendingCount; ?></span>
     <?php endif; ?>
   </a>
 <?php endif; ?>
 <?php if ($isAdmin): ?>
-  <a class="item" href="admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
+  <a class="item" href="../admin/admin_panel.php"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span></a>
 <?php endif; ?>
       </nav>
     </div>
     <div class="nav-bottom">
       <div class="section">Profil</div>
-      <a class="item" href="profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
-      <a class="item" href="settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
-      <a class="item danger" href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
+      <a class="item" href="../user/profile.php"><i class="fa-solid fa-user"></i><span>Účet</span></a>
+      <a class="item" href="../user/settings.php"><i class="fa-solid fa-gear"></i><span>Nastavení</span></a>
+      <a class="item danger" href="../auth/logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Odhlásit</span></a>
     </div>
   </aside>
 
@@ -296,7 +296,7 @@ if (!$isPatron && !$hasPatron) {
 
   <div class="overlay" id="overlay"></div>
 
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
   <script>
     // Modal pro patrona
     const choosePatronModal = document.getElementById('choosePatronModal');
@@ -380,7 +380,7 @@ if (!$isPatron && !$hasPatron) {
         const body = new URLSearchParams();
         body.set('patron_id', chosenPatron.id);
 
-        const res = await fetch('api/patron_request.php', {
+        const res = await fetch('../api/patron_request.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body
@@ -408,7 +408,7 @@ if (!$isPatron && !$hasPatron) {
         body.set('mentee_email', selectedMentee.email);
         body.set('mentee_name', selectedMentee.name);
 
-        const res = await fetch('api/remove_mentee.php', {
+        const res = await fetch('../api/remove_mentee.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body
@@ -440,6 +440,50 @@ if (!$isPatron && !$hasPatron) {
       overlay.addEventListener('click', close);
       window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     })();
+
+    // Update task pill with database data
+    async function updateSidebarTasksPill() {
+      const pill = document.getElementById('tasksPill');
+      if (!pill) return;
+      
+      try {
+        let totalCompleted = 0;
+        const categories = {
+          'skauting': 5, 'tabornicke-dovednosti': 5, 'orientace-v-prirode': 4,
+          'sport-kondice': 2, 'zdravy-zivotni-styl': 3, 'vedomosti-o-tele': 1,
+          'prakticky-zivot': 10, 'moje-zajmy': 2, 'poznavani-prirody': 2,
+          'moje-city': 1, 'umelecka-tvorivost': 4, 'vnimani-prirody': 2,
+          'vyjadrovani': 6, 'spoluprace': 5, 'respekt': 5, 'sluzba-potrebnym': 5,
+          'neziji-sam': 5, 'ochrana-prirody': 6, 'duchovno': 5, 'sebeovladani': 5,
+          'zodpovednost': 5, 'druzinova-schuzka': 5, 'hry': 5, 'bezpecnost': 6,
+          'zdravoveda': 6
+        };
+        
+        for (const categoryKey of Object.keys(categories)) {
+          const response = await fetch(`../api/load_task_progress.php?category_key=${categoryKey}`);
+          const result = await response.json();
+          
+          if (result.success && result.data.progress) {
+            const progress = result.data.progress;
+            const totalTasks = categories[categoryKey];
+            
+            for (let i = 0; i < totalTasks; i++) {
+              const taskProgress = progress[i];
+              if (taskProgress && taskProgress.status === 2) {
+                totalCompleted++;
+              }
+            }
+          }
+        }
+        
+        pill.textContent = totalCompleted;
+      } catch (error) {
+        console.error('Error updating tasks pill:', error);
+        pill.textContent = '0';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateSidebarTasksPill);
   </script>
 </body>
 </html>

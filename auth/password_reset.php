@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/connect.php';
+require_once __DIR__ . '/../config/connect.php';
 
 // 1) Ověříme token
 $token = isset($_GET['token']) ? trim($_GET['token']) : '';
@@ -50,7 +50,7 @@ if (!$token) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Změna hesla | Albion stezka</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,7 +75,7 @@ if (!$token) {
           <i class="fa-solid fa-circle-exclamation" style="font-size: 64px; color: #ef4444; margin-bottom: 20px;"></i>
           <h2 style="margin-bottom: 10px; color: #ef4444;">Chyba ověření</h2>
           <p style="color: #6b7280; margin-bottom: 30px;"><?php echo htmlspecialchars($error); ?></p>
-          <a href="index.php" class="btn" style="display: inline-block; text-decoration: none;">
+          <a href="../index.php" class="btn" style="display: inline-block; text-decoration: none;">
             <i class="fa-solid fa-arrow-left"></i> Zpět na přihlášení
           </a>
         </div>
@@ -118,7 +118,7 @@ if (!$token) {
           </button>
 
           <div class="links">
-            <a href="index.php" style="color: #6b7280; text-decoration: none;">
+            <a href="../index.php" style="color: #6b7280; text-decoration: none;">
               <i class="fa-solid fa-arrow-left"></i> Zpět na přihlášení
             </a>
           </div>
@@ -127,7 +127,7 @@ if (!$token) {
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
   <script>
     // Síla hesla
     (function passwordStrength() {
@@ -210,7 +210,7 @@ if (!$token) {
         body.set('token', token);
         body.set('newPassword', newPassword);
 
-        const res = await fetch('api/password_reset_process.php', {
+        const res = await fetch('../api/password_reset_process.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body
@@ -221,7 +221,7 @@ if (!$token) {
         if (json.ok) {
           if (window.showSuccessToast) showSuccessToast('Heslo bylo úspěšně změněno!');
           setTimeout(() => {
-            window.location.href = 'index.php';
+            window.location.href = '../index.php';
           }, 2000);
         } else {
           const msg = json.msg || 'Změna hesla se nezdařila.';

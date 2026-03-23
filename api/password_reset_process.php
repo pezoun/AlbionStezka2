@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 session_start();
-require_once __DIR__ . '/../connect.php';
+require_once __DIR__ . '/../config/connect.php';
 require_once __DIR__ . '/../emailSent.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

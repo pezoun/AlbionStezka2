@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['pending_approval'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -15,7 +15,7 @@ unset($_SESSION['pending_approval'], $_SESSION['pending_email']);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Čeká na schválení | Albion stezka</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -321,6 +321,6 @@ unset($_SESSION['pending_approval'], $_SESSION['pending_email']);
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
 </body>
 </html>
